@@ -21,12 +21,11 @@ connection = pymysql.connect(
     passwd=config.get('database', 'password'),
     database=config.get('database', 'database'),
 )
-cursor = connection.cursor()
 
 @app.route('/')
 def login():
     if 'user_id' in session:
-        return redirect('/home')
+        return redirect('/app')
     else:
         return render_template('login.html')
 
@@ -34,8 +33,8 @@ def login():
 def register():
     return render_template('register.html')
 
-@app.route('/home')
-def home():
+@app.route('/app')
+def webapp():
     if 'user_id' in session:
         return render_template('home.html')
     else:
@@ -43,58 +42,71 @@ def home():
 
 @app.route('/login_validation', methods=['POST'])
 def login_validation():
-    email = request.form.get('email')
+    username = request.form.get('username')
     password = request.form.get('password')
 
+    cursor = connection.cursor()
+
     query = """
-        SELECT * FROM `users` WHERE `email` LIKE "{}" LIMIT 1;
-    """.format(email)
+        SELECT * FROM `users` WHERE `username` LIKE "{}" LIMIT 1;
+    """.format(username)
     cursor.execute(query)
     users = cursor.fetchall()
+
+    if not users:
+        cursor.close()
+        flash('No account seems to exist with that username.')
+        return redirect('/')
 
     stored_password = users[0][2]
 
     passwords_match = check_password_hash(stored_password, password)
 
+    cursor.close()
     if passwords_match:
         session['user_id'] = users[0][0]
-        return redirect('/home')
+        return redirect('/app')
     else:
+        flash('The password you entered does not match the one in our records.')
         return redirect('/')
 
 @app.route('/add_user', methods=['POST'])
 def add_user():
-    email = request.form.get('add-email')
+    username = request.form.get('add-username')
     password = request.form.get('add-password')
     hashed = generate_password_hash(password)
+
+    cursor = connection.cursor()
 
     # 
 
     query = """
-        SELECT * FROM `users` WHERE `email` LIKE "{}";
-    """.format(email)
+        SELECT * FROM `users` WHERE `username` LIKE "{}";
+    """.format(username)
     cursor.execute(query)
     users = cursor.fetchall()
 
     if len(users):
-        flash('This email address has already been registered.')
+        cursor.close()
+        flash('This username has already been taken.')
         return redirect('/register')
 
     #
 
     query = """
-        INSERT INTO `users` (`id`, `email`, `password`)
+        INSERT INTO `users` (`id`, `username`, `password`)
         VALUES (NULL, "{}", "{}");
-    """.format(email, hashed)
+    """.format(username, hashed)
     cursor.execute(query)
     connection.commit()
 
     cursor.execute("""
-        SELECT * FROM `users` WHERE `email` LIKE "{}"
-    """.format(email))
+        SELECT * FROM `users` WHERE `username` LIKE "{}"
+    """.format(username))
     user = cursor.fetchall()
     session['user_id'] = user[0][0]
-    return redirect('/home')
+    cursor.close()
+    return redirect('/app')
 
 @app.route('/logout')
 def logout():

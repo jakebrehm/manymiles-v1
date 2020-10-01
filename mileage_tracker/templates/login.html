@@ -25,9 +25,19 @@
             <div class="col-md-4">
                 <div class="card mt-100">
                     <div class="card-body">
+                        {% with messages = get_flashed_messages() %}
+                            {% if messages %}
+                                {% for message in messages %}
+                                    <div class="alert alert-danger" role="alert">
+                                        {{message}}
+                                    </div>
+                                    <br>
+                                {% endfor %}
+                            {% endif %}
+                        {% endwith %}
                         <form method="post" action="/login_validation">
-                            <label>Email</label>
-                            <input type="email" class="form-control" name="email"><br>
+                            <label>Username</label>
+                            <input type="username" class="form-control" name="username"><br>
                             <label>Password</label><br>
                             <input type="password" class="form-control" name="password"><br><br>
                             <input type="submit" class="btn btn-primary btn-block btn-lg" value="Login">
