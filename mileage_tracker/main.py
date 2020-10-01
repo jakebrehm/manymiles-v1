@@ -3,7 +3,8 @@ import pathlib
 from configparser import ConfigParser
 
 import pymysql
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, flash, redirect, render_template, request, session
+from werkzeug.security import check_password_hash, generate_password_hash
 
 
 PROJECT_FOLDER = pathlib.Path(__file__).resolve().parent
@@ -46,13 +47,16 @@ def login_validation():
     password = request.form.get('password')
 
     query = """
-        SELECT * FROM `users` WHERE `email` LIKE "{}" AND `password` LIKE "{}"
-        LIMIT 1;
-    """.format(email, password)
+        SELECT * FROM `users` WHERE `email` LIKE "{}" LIMIT 1;
+    """.format(email)
     cursor.execute(query)
     users = cursor.fetchall()
 
-    if users:
+    stored_password = users[0][2]
+
+    passwords_match = check_password_hash(stored_password, password)
+
+    if passwords_match:
         session['user_id'] = users[0][0]
         return redirect('/home')
     else:
@@ -60,14 +64,28 @@ def login_validation():
 
 @app.route('/add_user', methods=['POST'])
 def add_user():
-    name = request.form.get('add-name')
     email = request.form.get('add-email')
     password = request.form.get('add-password')
+    hashed = generate_password_hash(password)
+
+    # 
 
     query = """
-        INSERT INTO `users` (`id`, `name`, `email`, `password`)
-        VALUES (NULL, "{}", "{}", "{}");
-    """.format(name, email, password)
+        SELECT * FROM `users` WHERE `email` LIKE "{}";
+    """.format(email)
+    cursor.execute(query)
+    users = cursor.fetchall()
+
+    if len(users):
+        flash('This email address has already been registered.')
+        return redirect('/register')
+
+    #
+
+    query = """
+        INSERT INTO `users` (`id`, `email`, `password`)
+        VALUES (NULL, "{}", "{}");
+    """.format(email, hashed)
     cursor.execute(query)
     connection.commit()
 

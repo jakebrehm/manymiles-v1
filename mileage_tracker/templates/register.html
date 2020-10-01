@@ -25,9 +25,19 @@
             <div class="col-md-4">
                 <div class="card mt-100">
                     <div class="card-body">
+                        {% with messages = get_flashed_messages() %}
+                            {% if messages %}
+                                {% for message in messages %}
+                                    <div class="alert alert-danger" role="alert">
+                                        {{message}}
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        {% endwith %}
+                        <br>
                         <form method="post" action="/add_user">
-                            <label>Name</label>
-                            <input type="text" class="form-control" name="add-name"><br>
+                            <!-- <label>Name</label>
+                            <input type="text" class="form-control" name="add-name"><br> -->
                             <label>Email</label>
                             <input type="email" class="form-control" name="add-email"><br>
                             <label>Password</label><br>
