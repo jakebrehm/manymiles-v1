@@ -1,0 +1,5 @@
+env/
+ide/
+scripts/
+tests/
+*.ini
