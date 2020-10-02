@@ -50,25 +50,25 @@
                 <div class="card mt-25 mb-100">
                     <div class="card-body">
                         <h5 class="card-title">Goal Information</h5>
-                        <form method="post" action="/">
+                        <form method="post" action="/update_goal">
                             <div class="row">
                                 <div class="col-sm-4 gutter-5">
                                     <label>Start Miles</label>
-                                    <input type="number" class="form-control" name="start-miles"><br>
+                                    <input type="number" class="form-control" name="start-miles" value={{ goal["start_miles"] }}><br>
                                 </div>
                                 <div class="col-sm-8 gutter-5">
                                     <label>Start Date</label><br>
-                                    <input type="date" class="form-control" name="start-date"><br>
+                                    <input type="date" class="form-control" name="start-date" value={{ goal["start_date"] }}><br>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-sm-4 gutter-5">
                                     <label>End Miles</label>
-                                    <input type="number" class="form-control" name="end-miles"><br>
+                                    <input type="number" class="form-control" name="end-miles"value={{ goal["end_miles"] }}><br>
                                 </div>
                                 <div class="col-sm-8 gutter-5">
                                     <label>End Date</label><br>
-                                    <input type="date" class="form-control" name="end-date"><br>
+                                    <input type="date" class="form-control" name="end-date"value={{ goal["end_date"] }}><br>
                                 </div>
                             </div>
                             <input type="submit" class="btn btn-primary btn-block btn-lg" value="Update">

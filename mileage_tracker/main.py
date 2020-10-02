@@ -36,7 +36,24 @@ def register():
 @server.route('/app')
 def app():
     if 'user_id' in session and 'username' in session:
-        return render_template('home.html', user=session['username'])
+
+        connection.ping()
+        cursor = connection.cursor()
+        
+        query = """
+            SELECT * FROM `goals` WHERE `user_id` LIKE "{}" LIMIT 1;
+        """.format(session['user_id'])
+        cursor.execute(query)
+        match = cursor.fetchall()
+
+        goal = {
+            'start_date': match[0][1] if match else None,
+            'end_date': match[0][2] if match else None,
+            'start_miles': match[0][3] if match else None,
+            'end_miles': match[0][4] if match else None,
+        }
+
+        return render_template('home.html', user=session['username'], goal=goal)
     else:
         return redirect('/')
 
@@ -46,7 +63,6 @@ def login_validation():
     password = request.form.get('password')
 
     connection.ping()
-
     cursor = connection.cursor()
 
     query = """
@@ -80,7 +96,6 @@ def add_user():
     hashed = generate_password_hash(password)
 
     connection.ping()
-
     cursor = connection.cursor()
 
     # 
@@ -120,6 +135,30 @@ def logout():
         session.pop('user_id')
         session.pop('username')
     return redirect('/')
+
+@server.route('/update_goal', methods=['POST'])
+def update_goal():
+    start_miles = request.form.get('start-miles')
+    start_date = request.form.get('start-date')
+    end_miles = request.form.get('end-miles')
+    end_date = request.form.get('end-date')
+
+    connection.ping()
+    cursor = connection.cursor()
+
+    query = """
+        REPLACE INTO `goals`
+        (`user_id`, `start_date`, `end_date`, `start_miles`, `end_miles`)
+        VALUES ("{}", "{}", "{}", "{}", "{}")
+    """.format(session['user_id'], start_date, end_date, start_miles, end_miles)
+    cursor.execute(query)
+    connection.commit()
+
+    if session['user_id']:
+        return redirect('/app')
+    else:
+        return redirect('/')
+
 
 if __name__ == '__main__':
     server.run(debug=True)
