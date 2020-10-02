@@ -4,6 +4,24 @@
     background: linear-gradient(to right, #3a6073, #3a7bd5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
+.nav-fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
 .mt-100 {
     margin-top: 100px;
 }
+
+.mb-100 {
+    margin-bottom: 100px;
+}
+
+.vertical-center {
+    min-height: 100%;  /* Fallback for browsers do NOT support vh unit */
+    min-height: 100vh; /* These two lines are counted as one :-)       */
+  
+    display: flex;
+    align-items: center;
+  }

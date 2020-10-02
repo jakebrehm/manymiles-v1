@@ -12,8 +12,8 @@ CONFIG_LOCATION = os.path.join(PROJECT_FOLDER, 'config.ini')
 config = ConfigParser()
 config.read(CONFIG_LOCATION)
 
-app = Flask(__name__)
-app.secret_key = os.urandom(24)
+server = Flask(__name__)
+server.secret_key = os.urandom(24)
 
 connection = pymysql.connect(
     host=config.get('database', 'host'),
@@ -22,25 +22,25 @@ connection = pymysql.connect(
     database=config.get('database', 'database'),
 )
 
-@app.route('/')
+@server.route('/')
 def login():
     if 'user_id' in session:
         return redirect('/app')
     else:
         return render_template('login.html')
 
-@app.route('/register')
+@server.route('/register')
 def register():
     return render_template('register.html')
 
-@app.route('/app')
-def webapp():
+@server.route('/app')
+def app():
     if 'user_id' in session:
         return render_template('home.html')
     else:
         return redirect('/')
 
-@app.route('/login_validation', methods=['POST'])
+@server.route('/login_validation', methods=['POST'])
 def login_validation():
     username = request.form.get('username')
     password = request.form.get('password')
@@ -70,7 +70,7 @@ def login_validation():
         flash('The password you entered does not match the one in our records.')
         return redirect('/')
 
-@app.route('/add_user', methods=['POST'])
+@server.route('/add_user', methods=['POST'])
 def add_user():
     username = request.form.get('add-username')
     password = request.form.get('add-password')
@@ -108,11 +108,11 @@ def add_user():
     cursor.close()
     return redirect('/app')
 
-@app.route('/logout')
+@server.route('/logout')
 def logout():
     if 'user_id' in session:
         session.pop('user_id')
     return redirect('/')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    server.run(debug=True)
