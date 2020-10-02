@@ -29,14 +29,12 @@
             <div class="col-md-4">
                 <div class="card mt-100">
                     <div class="card-body">
+                        <h5 class="card-title">Add or Update Records</h5>
                         <form method="post" action="/">
                             <label>Miles</label>
                             <input type="number" class="form-control" name="start-miles"><br>
                             <label>Date & Time</label><br>
-                            <input type="datetime-local" class="form-control" name="start-date"><br><br>
-                            <!-- <input type="submit" class="btn btn-primary btn-block btn-lg" value="View records"><br>
-                            <input type="submit" class="btn btn-primary btn-block btn-lg" value="Add record"> -->
-                            
+                            <input type="datetime-local" class="form-control" name="start-date"><br>
                             <div class="row">
                                 <div class="col-sm-6 gutter-5">
                                     <input type="submit" class="btn btn-primary btn-block btn-lg" value="View records">
@@ -45,21 +43,34 @@
                                     <input type="submit" class="btn btn-primary btn-block btn-lg" value="Add record">
                                 </div>
                             </div>
-
                         </form>
                     </div>
                 </div>
+                
                 <div class="card mt-25 mb-100">
                     <div class="card-body">
+                        <h5 class="card-title">Goal Information</h5>
                         <form method="post" action="/">
-                            <label>Start Miles</label>
-                            <input type="number" class="form-control" name="start-miles"><br>
-                            <label>Start Date</label><br>
-                            <input type="date" class="form-control" name="start-date"><br>
-                            <label>End Miles</label>
-                            <input type="number" class="form-control" name="end-miles"><br>
-                            <label>End Date</label><br>
-                            <input type="date" class="form-control" name="end-date"><br><br>
+                            <div class="row">
+                                <div class="col-sm-4 gutter-5">
+                                    <label>Start Miles</label>
+                                    <input type="number" class="form-control" name="start-miles"><br>
+                                </div>
+                                <div class="col-sm-8 gutter-5">
+                                    <label>Start Date</label><br>
+                                    <input type="date" class="form-control" name="start-date"><br>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4 gutter-5">
+                                    <label>End Miles</label>
+                                    <input type="number" class="form-control" name="end-miles"><br>
+                                </div>
+                                <div class="col-sm-8 gutter-5">
+                                    <label>End Date</label><br>
+                                    <input type="date" class="form-control" name="end-date"><br>
+                                </div>
+                            </div>
                             <input type="submit" class="btn btn-primary btn-block btn-lg" value="Update">
                         </form>
                     </div>
