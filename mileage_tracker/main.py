@@ -24,7 +24,7 @@ connection = pymysql.connect(
 
 @server.route('/')
 def login():
-    if 'user_id' in session:
+    if 'user_id' in session and 'username' in session:
         return redirect('/app')
     else:
         return render_template('login.html')
@@ -35,8 +35,8 @@ def register():
 
 @server.route('/app')
 def app():
-    if 'user_id' in session:
-        return render_template('home.html')
+    if 'user_id' in session and 'username' in session:
+        return render_template('home.html', user=session['username'])
     else:
         return redirect('/')
 
@@ -44,6 +44,8 @@ def app():
 def login_validation():
     username = request.form.get('username')
     password = request.form.get('password')
+
+    connection.ping()
 
     cursor = connection.cursor()
 
@@ -65,6 +67,7 @@ def login_validation():
     cursor.close()
     if passwords_match:
         session['user_id'] = users[0][0]
+        session['username'] = users[0][1]
         return redirect('/app')
     else:
         flash('The password you entered does not match the one in our records.')
@@ -75,6 +78,8 @@ def add_user():
     username = request.form.get('add-username')
     password = request.form.get('add-password')
     hashed = generate_password_hash(password)
+
+    connection.ping()
 
     cursor = connection.cursor()
 
@@ -105,6 +110,7 @@ def add_user():
     """.format(username))
     user = cursor.fetchall()
     session['user_id'] = user[0][0]
+    session['username'] = user[0][1]
     cursor.close()
     return redirect('/app')
 
@@ -112,6 +118,7 @@ def add_user():
 def logout():
     if 'user_id' in session:
         session.pop('user_id')
+        session.pop('username')
     return redirect('/')
 
 if __name__ == '__main__':
