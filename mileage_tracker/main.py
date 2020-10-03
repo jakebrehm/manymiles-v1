@@ -53,6 +53,9 @@ def app():
             'end_miles': match[0][4] if match else None,
         }
 
+        cursor.close()
+        connection.close()
+
         return render_template('home.html', user=session['username'], goal=goal)
     else:
         return redirect('/')
@@ -81,6 +84,7 @@ def login_validation():
     passwords_match = check_password_hash(stored_password, password)
 
     cursor.close()
+    connection.close()
     if passwords_match:
         session['user_id'] = users[0][0]
         session['username'] = users[0][1]
@@ -108,6 +112,7 @@ def add_user():
 
     if len(users):
         cursor.close()
+        connection.close()
         flash('This username has already been taken.')
         return redirect('/register')
 
@@ -127,6 +132,7 @@ def add_user():
     session['user_id'] = user[0][0]
     session['username'] = user[0][1]
     cursor.close()
+    connection.close()
     return redirect('/app')
 
 @server.route('/logout')
@@ -154,10 +160,50 @@ def update_goal():
     cursor.execute(query)
     connection.commit()
 
+    cursor.close()
+    connection.close()
     if session['user_id']:
         return redirect('/app')
     else:
         return redirect('/')
+
+@server.route('/add_update_records', methods=['POST'])
+def add_record():
+    miles = request.form.get('miles')
+    datetime = request.form.get('datetime')
+    view_records = request.form.get('view-records')
+    add_record = request.form.get('add-record')
+
+    if not miles or not datetime:
+        return redirect('/app')
+
+
+    # return f'{datetime} --> {mileage}<br>View --> {view_records == None}<br>Add --> {add_record == None}'
+
+    if add_record is not None:
+        date, time = datetime.split('T')
+            
+        connection.ping()
+        cursor = connection.cursor()
+
+        query = """
+            INSERT INTO `records`
+            (`user_id`, `date`, `time`, `miles`)
+            VALUES ("{}", "{}", "{}", "{}")
+        """.format(session['user_id'], date, time, miles)
+        cursor.execute(query)
+        connection.commit()
+
+        cursor.close()
+        connection.close()
+
+        if session['user_id']:
+            return redirect('/app')
+        else:
+            return redirect('/')
+    
+    else:
+        return redirect('/app')
 
 
 if __name__ == '__main__':

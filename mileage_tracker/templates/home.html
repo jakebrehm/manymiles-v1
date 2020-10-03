@@ -30,17 +30,17 @@
                 <div class="card mt-100">
                     <div class="card-body">
                         <h5 class="card-title">Add or Update Records</h5>
-                        <form method="post" action="/">
+                        <form method="post" action="/add_update_records">
                             <label>Miles</label>
-                            <input type="number" class="form-control" name="start-miles"><br>
+                            <input type="number" class="form-control" name="miles"><br>
                             <label>Date & Time</label><br>
-                            <input type="datetime-local" class="form-control" name="start-date"><br>
+                            <input type="datetime-local" class="form-control" name="datetime"><br>
                             <div class="row">
                                 <div class="col-sm-6 gutter-5">
-                                    <input type="submit" class="btn btn-primary btn-block btn-lg" value="View records">
+                                    <input type="submit" class="btn btn-primary btn-block btn-lg" name="view-records" value="View records">
                                 </div>
                                 <div class="col-sm-6 gutter-5">
-                                    <input type="submit" class="btn btn-primary btn-block btn-lg" value="Add record">
+                                    <input type="submit" class="btn btn-primary btn-block btn-lg" name="add-record" value="Add record">
                                 </div>
                             </div>
                         </form>
