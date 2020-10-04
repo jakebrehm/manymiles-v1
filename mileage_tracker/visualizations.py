@@ -32,8 +32,14 @@ class Visualizer:
         query = """
             SELECT * FROM `records` WHERE `user_id` LIKE {};
         """.format(self._user_id)
-
         records = self._query_database(query)
+
+        query = """
+            SELECT * FROM `goals` WHERE `user_id` LIKE {} LIMIT 1;
+        """.format(self._user_id)
+        goals = self._query_database(query)[0]
+        start_date, end_date = goals[1], goals[2]
+        start_miles, end_miles = goals[3], goals[4]
 
         df = pd.DataFrame(records)
         df.columns = ['user_id', 'date', 'time', 'miles']
@@ -45,6 +51,10 @@ class Visualizer:
             go.Scatter(
                 x=df['datetime'],
                 y=df['miles'],
+            ),
+            go.Scatter(
+                x=[start_date, end_date],
+                y=[start_miles, end_miles],
             ),
         ]
 
