@@ -47,14 +47,30 @@ class Visualizer:
         pd.to_datetime(df['datetime'])
         df.sort_values(by='datetime')
 
+        optimal_dates = [start_date, end_date]
+        optimal_miles = [start_miles, end_miles]
+        names = ['date', 'miles']
+
+        dates = pd.period_range(min(optimal_dates), max(optimal_dates))
+        dates = dates.strftime(r'%Y-%m-%dT11:59').tolist()
+        miles = [None] * len(dates)
+        miles[0], miles[-1] = optimal_miles[0], optimal_miles[-1]
+
+        optimal = pd.DataFrame(zip(dates, miles), columns=names)
+        optimal['miles'] = optimal['miles'].interpolate()
+        pd.to_datetime(optimal['date'])
+        optimal = optimal[optimal['date'] <= max(df['datetime'])]
+
         data = [
             go.Scatter(
                 x=df['datetime'],
                 y=df['miles'],
             ),
             go.Scatter(
-                x=[start_date, end_date],
-                y=[start_miles, end_miles],
+                x=optimal['date'],
+                y=optimal['miles'],
+                fill='tonexty',
+                line_color='green',
             ),
         ]
 

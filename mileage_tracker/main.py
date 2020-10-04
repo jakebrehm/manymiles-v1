@@ -58,10 +58,7 @@ def app():
         connection.close()
 
         visualizer = vis.Visualizer(connection, session['user_id'])
-        # print(visualizer.create_daily_plot())
         plot = visualizer.create_daily_plot()
-
-        # plot = vis.create_plot()
 
         return render_template(
             'home.html',

@@ -83,7 +83,8 @@
                 </div>
             </div>
             <div class="col-md-8">
-                <h1 class="text-light display-4 mt-100 mb-100" style="font-size: 80px;">Track your mileage every day</h1>
+                <h1 class="text-light display-4 mt-100" style="font-size: 80px;">Track your mileage</h1>
+                <!-- <h1 class="text-light display-4 mt-100 mb-100" style="font-size: 80px;">Track your mileage every day</h1> -->
                 <!-- <h1 class="text-light display-4 mt-100 mb-100" style="font-size: 80px;">Track your mileage every day</h1> -->
                 <!-- <div class="chart" id="bargraph">
                     <script>
@@ -92,17 +93,24 @@
                     </script>
                 </div> -->
 
-                <!-- <div class="card">
+                <!-- <div class="chart" id="bargraph">
+                    <script>
+                        var graphs = {{plot | safe}};
+                        Plotly.plot('bargraph',graphs,{});
+                    </script>
+                </div> -->
+
+                <div class="card">
                     <div class="card-body">
-                        <!-- <h5 class="card-title">Goal Information</h5> -->
+                        <h5 class="card-header">Mileage over time</h5>
                         <div class="chart" id="bargraph">
                             <script>
                                 var graphs = {{plot | safe}};
-                                Plotly.plot('bargraph',graphs,{});
+                                Plotly.plot('bargraph',graphs,{},{responsive: true});
                             </script>
                         </div>
                     </div>
-                </div> -->
+                </div>
             </div>
         </div>
     </div>
