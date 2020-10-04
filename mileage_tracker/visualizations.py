@@ -66,14 +66,22 @@ class Visualizer:
             go.Scatter(
                 x=df['datetime'],
                 y=df['miles'],
-                name = 'Actual',
+                name='Actual',
+                # hovertemplate=(
+                #     '%{x}'
+                #     # "<b>%{text}</b>",
+                #     # "<b>%{text}</b><br><br>",
+                #     # "<extra></extra>",
+                # ),
+                hovertemplate='%{y:0.2f}'
             ),
             go.Scatter(
                 x=optimal['date'],
                 y=optimal['miles'],
                 fill='tonexty',
                 line_color='green',
-                name = 'Optimal',
+                name='Optimal',
+                hovertemplate='%{y:0.2f}'
             ),
         ]
 

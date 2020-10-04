@@ -103,7 +103,7 @@
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-header">Mileage over time</h5>
-                        <div class="chart" id="bargraph">
+                        <div class="chart" id="total-mileage">
                             <script>
                                 var graphs = {{plot | safe}};
                                 var config = {
@@ -141,7 +141,7 @@
                                     }
                                 };
                                 Plotly.plot(
-                                    'bargraph',
+                                    'total-mileage',
                                     graphs,
                                     layout,
                                     config,
