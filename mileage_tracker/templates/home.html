@@ -106,7 +106,46 @@
                         <div class="chart" id="bargraph">
                             <script>
                                 var graphs = {{plot | safe}};
-                                Plotly.plot('bargraph',graphs,{},{responsive: true});
+                                var config = {
+                                    responsive: true,
+                                    scrollZoom: true,
+                                };
+                                var layout = {
+                                    xaxis: {
+                                        title: 'Date',
+                                        titlefont: {
+                                            family: 'Arial, sans-serif',
+                                            size: 14,
+                                            color: 'grey',
+                                        },
+                                    },
+                                    yaxis: {
+                                        title: 'Miles',
+                                        titlefont: {
+                                            family: 'Arial, sans-serif',
+                                            size: 14,
+                                            color: 'grey',
+                                        },
+                                    },
+                                    legend: {
+                                        x: 0.025,
+                                        xanchor: 'left',
+                                        y: 0.975,
+                                    },
+                                    margin: {
+                                        l: 60,
+                                        r: 40,
+                                        b: 60,
+                                        t: 20,
+                                        // pad: 4,
+                                    }
+                                };
+                                Plotly.plot(
+                                    'bargraph',
+                                    graphs,
+                                    layout,
+                                    config,
+                                );
                             </script>
                         </div>
                     </div>

@@ -13,6 +13,16 @@ class Visualizer:
         self._connection = connection
         self._user_id = user_id
 
+        query = """
+            SELECT * FROM `records` WHERE `user_id` LIKE {};
+        """.format(self._user_id)
+        self._records = self._query_database(query)
+
+        query = """
+            SELECT * FROM `goals` WHERE `user_id` LIKE {} LIMIT 1;
+        """.format(self._user_id)
+        self._goals = self._query_database(query)[0]
+
     def _query_database(self, query):
 
         self._connection.ping()
@@ -28,20 +38,11 @@ class Visualizer:
         return records
 
     def create_daily_plot(self):
+        
+        start_date, end_date = self._goals[1], self._goals[2]
+        start_miles, end_miles = self._goals[3], self._goals[4]
 
-        query = """
-            SELECT * FROM `records` WHERE `user_id` LIKE {};
-        """.format(self._user_id)
-        records = self._query_database(query)
-
-        query = """
-            SELECT * FROM `goals` WHERE `user_id` LIKE {} LIMIT 1;
-        """.format(self._user_id)
-        goals = self._query_database(query)[0]
-        start_date, end_date = goals[1], goals[2]
-        start_miles, end_miles = goals[3], goals[4]
-
-        df = pd.DataFrame(records)
+        df = pd.DataFrame(self._records)
         df.columns = ['user_id', 'date', 'time', 'miles']
         df['datetime'] = df['date'] + "T" + df['time']
         pd.to_datetime(df['datetime'])
@@ -65,12 +66,14 @@ class Visualizer:
             go.Scatter(
                 x=df['datetime'],
                 y=df['miles'],
+                name = 'Actual',
             ),
             go.Scatter(
                 x=optimal['date'],
                 y=optimal['miles'],
                 fill='tonexty',
                 line_color='green',
+                name = 'Optimal',
             ),
         ]
 
