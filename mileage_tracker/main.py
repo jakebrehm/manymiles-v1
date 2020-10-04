@@ -6,9 +6,10 @@ import pymysql
 from flask import Flask, flash, redirect, render_template, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
 
+import visualizations as vis
 
-PROJECT_FOLDER = pathlib.Path(__file__).resolve().parent
-CONFIG_LOCATION = os.path.join(PROJECT_FOLDER, 'config.ini')
+PROJECT_FOLDER = pathlib.Path(__file__).resolve().parent.parent
+CONFIG_LOCATION = os.path.join(PROJECT_FOLDER, 'data', 'config.ini')
 config = ConfigParser()
 config.read(CONFIG_LOCATION)
 
@@ -56,7 +57,18 @@ def app():
         cursor.close()
         connection.close()
 
-        return render_template('home.html', user=session['username'], goal=goal)
+        visualizer = vis.Visualizer(connection, session['user_id'])
+        # print(visualizer.create_daily_plot())
+        plot = visualizer.create_daily_plot()
+
+        # plot = vis.create_plot()
+
+        return render_template(
+            'home.html',
+            user=session['username'],
+            goal=goal,
+            plot=plot,
+        )
     else:
         return redirect('/')
 
@@ -177,12 +189,9 @@ def add_record():
     if not miles or not datetime:
         return redirect('/app')
 
-
-    # return f'{datetime} --> {mileage}<br>View --> {view_records == None}<br>Add --> {add_record == None}'
-
     if add_record is not None:
         date, time = datetime.split('T')
-            
+
         connection.ping()
         cursor = connection.cursor()
 
@@ -204,7 +213,6 @@ def add_record():
     
     else:
         return redirect('/app')
-
 
 if __name__ == '__main__':
     server.run(debug=True)

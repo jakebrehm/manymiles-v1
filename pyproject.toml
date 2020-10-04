@@ -8,6 +8,8 @@ authors = ["Jake Brehm <jake.m.brehm@gmail.com>"]
 python = "^3.7"
 flask = "^1.1.2"
 pymysql = "^0.10.1"
+pandas = "^1.1.2"
+plotly = "^4.11.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
