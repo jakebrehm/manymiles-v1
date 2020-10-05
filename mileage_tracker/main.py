@@ -58,14 +58,16 @@ def app():
         connection.close()
 
         visualizer = vis.Visualizer(connection, session['user_id'])
-        plot = visualizer.create_daily_plot()
+        total_mileage_plot = visualizer.create_total_mileage_plot()
+        daily_change_plot = visualizer.create_daily_change_plot()
         analysis = visualizer.perform_analysis()
 
         return render_template(
             'home.html',
             user=session['username'],
             goal=goal,
-            plot=plot,
+            total_mileage_plot=total_mileage_plot,
+            daily_change_plot=daily_change_plot,
             analysis=analysis,
         )
     else:

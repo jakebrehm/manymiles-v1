@@ -62,7 +62,7 @@ class Visualizer:
         return records
 
     def _get_optimal_mileages(self):
-        optimal = self._optimal_df
+        optimal = self._optimal_df.copy()
         return optimal[optimal['date'] <= max(self._records_df['datetime'])]
 
     def _get_current_optimal_mileage(self):
@@ -70,7 +70,7 @@ class Visualizer:
         return optimal[optimal['date'] == max(optimal['date'])]['miles']
 
     def _get_most_recent_mileage(self):
-        actual = self._records_df
+        actual = self._records_df.copy()
         return actual[actual['datetime'] == max(actual['datetime'])]['miles']
 
     def perform_analysis(self):
@@ -80,6 +80,7 @@ class Visualizer:
         actual_miles = self._get_most_recent_mileage()
 
         overage = optimal_miles.values[0] - actual_miles.values[0]
+        # TODO: check if overage is correct
 
         return {
             'budget': end_miles - start_miles,
@@ -87,7 +88,7 @@ class Visualizer:
             'over-under': 'under' if overage >= 0 else 'over',
         }
 
-    def create_daily_plot(self):
+    def create_total_mileage_plot(self):
 
         optimal = self._get_optimal_mileages()
 
@@ -96,7 +97,7 @@ class Visualizer:
                 x=self._records_df['datetime'],
                 y=self._records_df['miles'],
                 name='Actual',
-                hovertemplate='<b>%{x}</b><br>%{y:0.2f}'
+                hovertemplate='<b>%{x}</b><br>%{y:0.2f} miles'
             ),
             go.Scatter(
                 x=optimal['date'],
@@ -104,7 +105,28 @@ class Visualizer:
                 fill='tonexty',
                 line_color='green',
                 name='Optimal',
-                hovertemplate='<b>%{x}</b><br>%{y:0.2f}'
+                hovertemplate='<b>%{x}</b><br>%{y:0.2f} miles'
+            ),
+        ]
+
+        return json.dumps(data, cls=plotly.utils.PlotlyJSONEncoder)
+
+    def create_daily_change_plot(self):
+        
+        records = self._records_df.copy()
+        records['datetime'] = pd.to_datetime(records['datetime'])
+        records.index = records['datetime']
+        records = records.groupby(pd.Grouper(freq='D')).max()
+
+        differences = pd.DataFrame()
+        differences['miles'] = records['miles'].diff()
+
+        data = [
+            go.Scatter(
+                x=differences.index,
+                y=differences['miles'],
+                name='Change',
+                hovertemplate='<b>%{x}</b><br>%{y:0.2f} mile change from previous day'
             ),
         ]
 

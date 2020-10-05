@@ -28,12 +28,12 @@
         </div>
     </nav>
 
-    <div class="container vertical-center">
+    <div class="container vertical-center mt-100 mb-100">
         <div class="row">
             <div class="col-md-4">
-                <div class="card mt-100">
+                <div class="card">
                     <div class="card-body">
-                        <h5 class="card-header">Add or Update Records</h5><br>
+                        <h5 class="card-header">Add or update records</h5><br>
                         <!-- <h5 class="card-title">Add or Update Records</h5> -->
                         <form method="post" action="/add_update_records">
                             <label>Miles</label>
@@ -52,9 +52,9 @@
                     </div>
                 </div>
                 
-                <div class="card mt-25 mb-100">
+                <div class="card mt-25">
                     <div class="card-body">
-                        <h5 class="card-header">Goal Information</h5><br>
+                        <h5 class="card-header">Goal information</h5><br>
                         <!-- <h5 class="card-title">Goal Information</h5> -->
                         <form method="post" action="/update_goal">
                             <div class="row">
@@ -85,10 +85,10 @@
             <div class="col-md-8">
                 <!-- <h1 class="text-light display-4 mt-100" style="font-size: 80px;">Track your mileage</h1> -->
 
-                <div class="card mt-100">
+                <div class="card">
                     <div class="card-body">
                         <h5 class="card-header">Analysis</h5><br>
-                        <p class="card-text">You have {{ analysis['budget'] }} miles budgetted.</p>
+                        <p class="card-text">You have {{ analysis['budget'] }} miles budgeted.</p>
                         <p class="card-text">
                             As of the time of your last record, you are {{ analysis['overage'] }} miles {{ analysis['over-under'] }} your allowance.</p>
                     </div>
@@ -99,7 +99,7 @@
                         <h5 class="card-header">Mileage over time</h5>
                         <div class="chart" id="total-mileage">
                             <script>
-                                var graphs = {{plot | safe}};
+                                var graphs = {{total_mileage_plot | safe}};
                                 var config = {
                                     responsive: true,
                                     scrollZoom: true,
@@ -135,6 +135,56 @@
                                 };
                                 Plotly.plot(
                                     'total-mileage',
+                                    graphs,
+                                    layout,
+                                    config,
+                                );
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mt-25">
+                    <div class="card-body">
+                        <h5 class="card-header">Mileage change day to day</h5>
+                        <div class="chart" id="daily-change">
+                            <script>
+                                var graphs = {{daily_change_plot | safe}};
+                                var config = {
+                                    responsive: true,
+                                    scrollZoom: true,
+                                };
+                                var layout = {
+                                    xaxis: {
+                                        title: 'Date',
+                                        titlefont: {
+                                            family: 'Arial, sans-serif',
+                                            size: 14,
+                                            color: 'grey',
+                                        },
+                                    },
+                                    yaxis: {
+                                        title: 'Mileage change',
+                                        titlefont: {
+                                            family: 'Arial, sans-serif',
+                                            size: 14,
+                                            color: 'grey',
+                                        },
+                                    },
+                                    legend: {
+                                        x: 0.025,
+                                        xanchor: 'left',
+                                        y: 0.975,
+                                    },
+                                    margin: {
+                                        l: 60,
+                                        r: 40,
+                                        b: 60,
+                                        t: 20,
+                                    }
+                                };
+                                Plotly.plot(
+                                    'daily-change',
                                     graphs,
                                     layout,
                                     config,
