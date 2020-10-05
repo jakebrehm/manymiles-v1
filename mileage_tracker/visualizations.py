@@ -1,4 +1,5 @@
 # import datetime.datetime as dt
+# import datetime
 import json
 
 import numpy as np
@@ -18,10 +19,33 @@ class Visualizer:
         """.format(self._user_id)
         self._records = self._query_database(query)
 
+        df = pd.DataFrame(self._records)
+        df.columns = ['user_id', 'date', 'time', 'miles']
+        df['datetime'] = df['date'] + "T" + df['time']
+        pd.to_datetime(df['datetime'])
+        df.sort_values(by='datetime')
+        self._records_df = df
+
         query = """
             SELECT * FROM `goals` WHERE `user_id` LIKE {} LIMIT 1;
         """.format(self._user_id)
         self._goals = self._query_database(query)[0]
+
+        start_date, end_date = self._goals[1], self._goals[2]
+        start_miles, end_miles = self._goals[3], self._goals[4]
+
+        optimal_dates = [start_date, end_date]
+        optimal_miles = [start_miles, end_miles]
+        
+        dates = pd.period_range(min(optimal_dates), max(optimal_dates))
+        dates = dates.strftime(r'%Y-%m-%dT11:59').tolist()
+        miles = [None] * len(dates)
+        miles[0], miles[-1] = optimal_miles[0], optimal_miles[-1]
+
+        optimal = pd.DataFrame(zip(dates, miles), columns=['date', 'miles'])
+        optimal['miles'] = optimal['miles'].interpolate()
+        pd.to_datetime(optimal['date'])
+        self._optimal_df = optimal
 
     def _query_database(self, query):
 
@@ -37,43 +61,42 @@ class Visualizer:
 
         return records
 
-    def create_daily_plot(self):
-        
-        start_date, end_date = self._goals[1], self._goals[2]
+    def _get_optimal_mileages(self):
+        optimal = self._optimal_df
+        return optimal[optimal['date'] <= max(self._records_df['datetime'])]
+
+    def _get_current_optimal_mileage(self):
+        optimal = self._get_optimal_mileages()
+        return optimal[optimal['date'] == max(optimal['date'])]['miles']
+
+    def _get_most_recent_mileage(self):
+        actual = self._records_df
+        return actual[actual['datetime'] == max(actual['datetime'])]['miles']
+
+    def perform_analysis(self):
         start_miles, end_miles = self._goals[3], self._goals[4]
 
-        df = pd.DataFrame(self._records)
-        df.columns = ['user_id', 'date', 'time', 'miles']
-        df['datetime'] = df['date'] + "T" + df['time']
-        pd.to_datetime(df['datetime'])
-        df.sort_values(by='datetime')
+        optimal_miles = self._get_current_optimal_mileage()
+        actual_miles = self._get_most_recent_mileage()
 
-        optimal_dates = [start_date, end_date]
-        optimal_miles = [start_miles, end_miles]
-        names = ['date', 'miles']
+        overage = optimal_miles.values[0] - actual_miles.values[0]
 
-        dates = pd.period_range(min(optimal_dates), max(optimal_dates))
-        dates = dates.strftime(r'%Y-%m-%dT11:59').tolist()
-        miles = [None] * len(dates)
-        miles[0], miles[-1] = optimal_miles[0], optimal_miles[-1]
+        return {
+            'budget': end_miles - start_miles,
+            'overage': f'{abs(overage):0.2f}',
+            'over-under': 'under' if overage >= 0 else 'over',
+        }
 
-        optimal = pd.DataFrame(zip(dates, miles), columns=names)
-        optimal['miles'] = optimal['miles'].interpolate()
-        pd.to_datetime(optimal['date'])
-        optimal = optimal[optimal['date'] <= max(df['datetime'])]
+    def create_daily_plot(self):
+
+        optimal = self._get_optimal_mileages()
 
         data = [
             go.Scatter(
-                x=df['datetime'],
-                y=df['miles'],
+                x=self._records_df['datetime'],
+                y=self._records_df['miles'],
                 name='Actual',
-                # hovertemplate=(
-                #     '%{x}'
-                #     # "<b>%{text}</b>",
-                #     # "<b>%{text}</b><br><br>",
-                #     # "<extra></extra>",
-                # ),
-                hovertemplate='%{y:0.2f}'
+                hovertemplate='<b>%{x}</b><br>%{y:0.2f}'
             ),
             go.Scatter(
                 x=optimal['date'],
@@ -81,7 +104,7 @@ class Visualizer:
                 fill='tonexty',
                 line_color='green',
                 name='Optimal',
-                hovertemplate='%{y:0.2f}'
+                hovertemplate='<b>%{x}</b><br>%{y:0.2f}'
             ),
         ]
 

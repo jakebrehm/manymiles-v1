@@ -83,24 +83,18 @@
                 </div>
             </div>
             <div class="col-md-8">
-                <h1 class="text-light display-4 mt-100" style="font-size: 80px;">Track your mileage</h1>
-                <!-- <h1 class="text-light display-4 mt-100 mb-100" style="font-size: 80px;">Track your mileage every day</h1> -->
-                <!-- <h1 class="text-light display-4 mt-100 mb-100" style="font-size: 80px;">Track your mileage every day</h1> -->
-                <!-- <div class="chart" id="bargraph">
-                    <script>
-                        var graphs = {{plot | safe}};
-                        Plotly.plot('bargraph',graphs,{});
-                    </script>
-                </div> -->
+                <!-- <h1 class="text-light display-4 mt-100" style="font-size: 80px;">Track your mileage</h1> -->
 
-                <!-- <div class="chart" id="bargraph">
-                    <script>
-                        var graphs = {{plot | safe}};
-                        Plotly.plot('bargraph',graphs,{});
-                    </script>
-                </div> -->
+                <div class="card mt-100">
+                    <div class="card-body">
+                        <h5 class="card-header">Analysis</h5><br>
+                        <p class="card-text">You have {{ analysis['budget'] }} miles budgetted.</p>
+                        <p class="card-text">
+                            As of the time of your last record, you are {{ analysis['overage'] }} miles {{ analysis['over-under'] }} your allowance.</p>
+                    </div>
+                </div>
 
-                <div class="card">
+                <div class="card mt-25">
                     <div class="card-body">
                         <h5 class="card-header">Mileage over time</h5>
                         <div class="chart" id="total-mileage">
@@ -137,7 +131,6 @@
                                         r: 40,
                                         b: 60,
                                         t: 20,
-                                        // pad: 4,
                                     }
                                 };
                                 Plotly.plot(

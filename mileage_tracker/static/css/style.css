@@ -14,6 +14,10 @@
     margin-top: 25px;
 }
 
+.mb-25 {
+    margin-bottom: 25px;
+}
+
 .mt-100 {
     margin-top: 100px;
 }
@@ -33,22 +37,6 @@
 .space {
     justify-content: right;
 }
-
-/* .small-gutters {
-    margin-right: 0;
-    margin-left: 0;
-  
-    > .col,
-    > [class*="col-"] {
-      padding-right: 0;
-      padding-left: 0;
-    }
-} */
-
-/* .col:not(:first-child,:last-child) {
-    padding-right:2px;
-    padding-left:2px;
-  } */
 
 [class*="col-"].gutter-5:first-child {
     padding-left:15px;

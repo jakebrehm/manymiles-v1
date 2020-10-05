@@ -59,12 +59,14 @@ def app():
 
         visualizer = vis.Visualizer(connection, session['user_id'])
         plot = visualizer.create_daily_plot()
+        analysis = visualizer.perform_analysis()
 
         return render_template(
             'home.html',
             user=session['username'],
             goal=goal,
             plot=plot,
+            analysis=analysis,
         )
     else:
         return redirect('/')

@@ -4,3 +4,4 @@ ide/
 scripts/
 tests/
 *.ini
+*.cpython*
