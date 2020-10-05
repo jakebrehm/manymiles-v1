@@ -45,6 +45,10 @@ class Visualizer:
         optimal = pd.DataFrame(zip(dates, miles), columns=['date', 'miles'])
         optimal['miles'] = optimal['miles'].interpolate()
         pd.to_datetime(optimal['date'])
+
+        self._daily_mileage = (end_miles - start_miles) / (len(optimal)-1)
+        optimal['miles'] += self._daily_mileage
+
         self._optimal_df = optimal
 
     def _query_database(self, query):
@@ -80,7 +84,6 @@ class Visualizer:
         actual_miles = self._get_most_recent_mileage()
 
         overage = optimal_miles.values[0] - actual_miles.values[0]
-        # TODO: check if overage is correct
 
         return {
             'budget': end_miles - start_miles,
