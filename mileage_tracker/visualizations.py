@@ -87,6 +87,7 @@ class Visualizer:
 
         return {
             'budget': end_miles - start_miles,
+            'daily': f'{self._daily_mileage:0.2f}',
             'overage': f'{abs(overage):0.2f}',
             'over-under': 'under' if overage >= 0 else 'over',
         }

@@ -88,7 +88,9 @@
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-header">Analysis</h5><br>
-                        <p class="card-text">You have {{ analysis['budget'] }} miles budgeted.</p>
+                        <p class="card-text">
+                            You have {{ analysis['budget'] }} miles budgeted, with a daily allowance of {{ analysis['daily'] }} miles.
+                        </p>
                         <p class="card-text">
                             As of the time of your last record, you are {{ analysis['overage'] }} miles {{ analysis['over-under'] }} your allowance.</p>
                     </div>
