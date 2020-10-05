@@ -132,6 +132,12 @@ class Visualizer:
                 name='Change',
                 hovertemplate='<b>%{x}</b><br>%{y:0.2f} mile change from previous day'
             ),
+            go.Scatter(
+                x=differences.index,
+                y=[self._daily_mileage] * len(differences.index),
+                line_color='red',
+                name='Daily Allowance',
+            ),
         ]
 
         return json.dumps(data, cls=plotly.utils.PlotlyJSONEncoder)
