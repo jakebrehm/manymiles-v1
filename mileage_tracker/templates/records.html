@@ -35,9 +35,12 @@
                                             <td class="pl-5">{{ record[2] }}</td>
                                             <td class="pl-5">{{ record[3] }}</td>
                                             <td class="pl-5">
+                                                <a href="" class="btn btn-primary btn-sm disabled" role="button" aria-disabled="true">Modify</a>
+                                                <!-- <a href="" class="btn btn-primary btn-sm" role="button">Modify</a> -->
                                                 <!-- <a href="">Modify</a> -->
                                                  <!-- |  -->
-                                                <a href="/delete_record?record={{ record[0] }}" style="color: lightcoral;">Delete</a>
+                                                <a href="/delete_record?record={{ record[0] }}" class="btn btn-danger btn-sm" role="button">Delete</a>
+                                                <!-- <a href="/delete_record?record={{ record[0] }}" style="color: lightcoral;">Delete</a> -->
                                                 <!-- <a href="/delete_record?date={{ record[1] }}&time={{ record[2] }}&miles={{ record[3] }}" style="color: lightcoral;">Delete</a> -->
                                             </td>
                                         </tr>
