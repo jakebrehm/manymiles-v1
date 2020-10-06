@@ -55,9 +55,6 @@ def app():
             'end_miles': match[0][4] if match else None,
         }
 
-        cursor.close()
-        connection.close()
-
         visualizer = vis.Visualizer(connection, session['user_id'])
         total_mileage_plot = visualizer.create_total_mileage_plot()
         daily_change_plot = visualizer.create_daily_change_plot()
@@ -65,6 +62,9 @@ def app():
 
         most_recent_record = visualizer.get_most_recent_record()
         most_recent_mileage = int(most_recent_record['miles'])
+
+        cursor.close()
+        connection.close()
 
         # TODO: Verify that current_time is timezone independent
         return render_template(
@@ -191,7 +191,7 @@ def update_goal():
 def add_record():
     miles = request.form.get('miles')
     datetime = request.form.get('datetime')
-    view_records = request.form.get('view-records')
+    # view_records = request.form.get('view-records')
     add_record = request.form.get('add-record')
 
     if not miles or not datetime:
@@ -220,7 +220,36 @@ def add_record():
             return redirect('/')
     
     else:
-        return redirect('/app')
+        return redirect('/records')
+
+@server.route('/records')
+def records():
+    if 'user_id' in session and 'username' in session:
+
+        connection.ping()
+        cursor = connection.cursor()
+
+        visualizer = vis.Visualizer(connection, session['user_id'])
+        all_records = visualizer._records_df
+        dates = all_records['date'].tolist()
+        times = all_records['time'].tolist()
+        miles = all_records['miles'].tolist()
+
+        processed_records = zip(dates, times, miles)
+
+        # for dt, m in processed_records:
+        #     print(dt, m)
+
+        cursor.close()
+        connection.close()
+
+        return render_template(
+            'records.html',
+            user=session['username'],
+            records=processed_records,
+        )
+    else:
+        return redirect('/')
 
 if __name__ == '__main__':
     server.run(debug=True)
