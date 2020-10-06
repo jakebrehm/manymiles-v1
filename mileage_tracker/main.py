@@ -235,10 +235,10 @@ def records():
         times = all_records['time'].tolist()
         miles = all_records['miles'].tolist()
 
-        processed_records = zip(dates, times, miles)
+        indices = list(range(len(all_records)))
+        print(indices[0], indices[-1])
 
-        # for dt, m in processed_records:
-        #     print(dt, m)
+        processed_records = zip(indices, dates, times, miles)
 
         cursor.close()
         connection.close()
@@ -250,6 +250,37 @@ def records():
         )
     else:
         return redirect('/')
+
+@server.route('/delete_record', methods=['GET'])
+def delete_record():
+    if not 'user_id' in session:
+        return redirect('/')
+
+    # index = request.args.get('record')
+    date = request.args.get('date')
+    time = request.args.get('time')
+    miles = request.args.get('miles')
+
+    connection.ping()
+    cursor = connection.cursor()
+    
+    query = """
+        DELETE FROM `records`
+        WHERE `user_id` LIKE "{}" AND `date` LIKE "{}" AND 
+        `time` LIKE "{}" AND `miles` LIKE "{}" LIMIT 1;
+    """.format(session['user_id'], date, time, miles)
+    # query = """
+    #     DELETE FROM `records`
+    #     WHERE `user_id` LIKE "{}" AND `date` LIKE "{}" AND 
+    #     `time` LIKE "{}" AND `miles` LIKE "{}" LIMIT 1;
+    # """.format(session['user_id'], date, time, miles)
+    cursor.execute(query)
+    connection.commit()
+
+    cursor.close()
+    connection.close()
+
+    return redirect('/records')
 
 if __name__ == '__main__':
     server.run(debug=True)

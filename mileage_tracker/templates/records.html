@@ -31,10 +31,14 @@
                                     
                                     {% for record in records %}
                                         <tr>
-                                            <th scope="row">{{ record[0] }}</th>
-                                            <td class="pl-5">{{ record[1] }}</td>
+                                            <th scope="row">{{ record[1] }}</th>
                                             <td class="pl-5">{{ record[2] }}</td>
-                                            <td class="pl-5">Modify | Delete</td>
+                                            <td class="pl-5">{{ record[3] }}</td>
+                                            <td class="pl-5">
+                                                <!-- <a href="">Modify</a> -->
+                                                 <!-- |  -->
+                                                <a href="/delete_record?date={{ record[1] }}&time={{ record[2] }}&miles={{ record[3] }}" style="color: lightcoral;">Delete</a>
+                                            </td>
                                         </tr>
                                     {% endfor %}
                                 </tbody>
