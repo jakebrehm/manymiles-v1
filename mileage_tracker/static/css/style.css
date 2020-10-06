@@ -56,3 +56,27 @@
     margin-left:-5px;
     margin-right:-5px;
 }
+
+.td-pad {
+    padding-left: 2rem !important;
+}
+
+/* Viewports of 525px or less */
+
+@media only screen and (max-width: 525px) {
+
+    .td-pad .record-btn:last-child {
+        margin-top: 0.25rem;
+    }
+
+}
+
+/* Viewports of 767px or less */
+
+@media only screen and (max-width: 767px) {
+
+    .td-pad {
+        padding-left: 1rem !important;
+    }
+
+}
