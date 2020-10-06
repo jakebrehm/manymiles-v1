@@ -20,7 +20,7 @@ class Visualizer:
         self._records = self._query_database(query)
 
         df = pd.DataFrame(self._records)
-        df.columns = ['user_id', 'date', 'time', 'miles']
+        df.columns = ['id', 'user_id', 'date', 'time', 'miles']
         df['datetime'] = df['date'] + "T" + df['time']
         pd.to_datetime(df['datetime'])
         df.sort_values(by='datetime')
