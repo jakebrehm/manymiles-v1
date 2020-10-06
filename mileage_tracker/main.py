@@ -1,3 +1,4 @@
+import datetime
 import os
 import pathlib
 from configparser import ConfigParser
@@ -62,6 +63,10 @@ def app():
         daily_change_plot = visualizer.create_daily_change_plot()
         analysis = visualizer.perform_analysis()
 
+        most_recent_record = visualizer.get_most_recent_record()
+        most_recent_mileage = int(most_recent_record['miles'])
+
+        # TODO: Verify that current_time is timezone independent
         return render_template(
             'home.html',
             user=session['username'],
@@ -69,6 +74,8 @@ def app():
             total_mileage_plot=total_mileage_plot,
             daily_change_plot=daily_change_plot,
             analysis=analysis,
+            most_recent_mileage=most_recent_mileage,
+            current_time=datetime.datetime.now().strftime('%Y-%m-%dT%H:%M'),
         )
     else:
         return redirect('/')

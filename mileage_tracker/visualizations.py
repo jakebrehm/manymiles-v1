@@ -74,8 +74,11 @@ class Visualizer:
         return optimal[optimal['date'] == max(optimal['date'])]['miles']
 
     def _get_most_recent_mileage(self):
+        return self.get_most_recent_record()['miles']
+
+    def get_most_recent_record(self):
         actual = self._records_df.copy()
-        return actual[actual['datetime'] == max(actual['datetime'])]['miles']
+        return actual[actual['datetime'] == max(actual['datetime'])]
 
     def perform_analysis(self):
         start_miles, end_miles = self._goals[3], self._goals[4]
@@ -137,6 +140,7 @@ class Visualizer:
                 y=[self._daily_mileage] * len(differences.index),
                 line_color='red',
                 name='Daily Allowance',
+                opacity=0.25,
             ),
         ]
 
