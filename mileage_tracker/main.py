@@ -1,7 +1,7 @@
+import configparser
 import datetime
 import os
 import pathlib
-from configparser import ConfigParser
 
 import pymysql
 from flask import Flask, flash, redirect, render_template, request, session
@@ -10,19 +10,32 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 import visualizations as vis
 
+
+class Configuration:
+
+    def __init__(self, config):
+        self.config = configparser.ConfigParser()
+        self.config.read(config)
+
+    def get(self, environment_name, config_section, config_name):
+        try:
+            return os.environ[environment_name]
+        except KeyError:
+            return self.config.get(config_section, config_name)
+
 PROJECT_FOLDER = pathlib.Path(__file__).resolve().parent.parent
 CONFIG_LOCATION = os.path.join(PROJECT_FOLDER, 'data', 'config.ini')
-config = ConfigParser()
-config.read(CONFIG_LOCATION)
+
+config = Configuration(CONFIG_LOCATION)
 
 server = Flask(__name__)
 server.secret_key = os.urandom(24)
 
 connection = pymysql.connect(
-    host=config.get('database', 'host'),
-    user=config.get('database', 'user'),
-    passwd=config.get('database', 'password'),
-    database=config.get('database', 'database'),
+    host=config.get('CLEARDB_DATABASE_HOST', 'database', 'host'),
+    user=config.get('CLEARDB_DATABASE_USER', 'database', 'user'),
+    passwd=config.get('CLEARDB_DATABASE_PASSWORD', 'database', 'password'),
+    database=config.get('CLEARDB_DATABASE_NAME', 'database', 'database'),
 )
 
 @server.route('/')
@@ -379,30 +392,16 @@ class RecordAPI(Resource):
 
     def put(self):
 
-        # print('hello')
-        
         args = add_record_put_args.parse_args()
-        # return args
 
         username = args['username']
         password = args['password']
         miles = args['miles']
 
-        # print('here 1')
-
         timedate = datetime.datetime.now().strftime(r'%Y-%m-%dT%H:%M')
         parsed_date, parsed_time = timedate.split(r'T')
-        # date = args.get('date', parsed_date)
-        # time = args.get('time', parsed_time)
         date = args['date'] if args['date'] else parsed_date
         time = args['time'] if args['time'] else parsed_time
-
-        # print(date, time)
-
-        # print('here 2')
-        
-        # datetime = 
-        # date, time = datetime.split('T')
 
         connection.ping()
         cursor = connection.cursor()
@@ -413,14 +412,12 @@ class RecordAPI(Resource):
         cursor.execute(query)
         users = cursor.fetchall()
 
-        user_id = users[0][0]
-        # print(user_id)
-        stored_password = users[0][2]
+        user_id, stored_password = users[0][0], users[0][2]
 
         passwords_match = check_password_hash(stored_password, password)
 
         if passwords_match:
-            # print(timedate, date, time)
+
             query = """
                 INSERT INTO `records`
                 (`user_id`, `date`, `time`, `miles`)
@@ -429,20 +426,11 @@ class RecordAPI(Resource):
             cursor.execute(query)
             connection.commit()
 
-            # print('here')
-
             cursor.close()
             connection.close()
 
-            # args['timedate'] = timedate
-            # args['pdate'] = date
-            # args['ptime'] = time
-            # args['type'] = str(type(args['date']))
-            # args['query'] = query
-
             return args
         else:
-            # return "Error", 500
             cursor.close()
             connection.close()
             return args
@@ -450,7 +438,6 @@ class RecordAPI(Resource):
 api.add_resource(
     RecordAPI,
     '/api/addrecord'
-    # '/api/addrecord/<string:username>&<string:password>'
 )
 
 if __name__ == '__main__':
