@@ -192,15 +192,15 @@ def update_goal():
 @server.route('/add_update_records', methods=['POST'])
 def add_record():
     miles = request.form.get('miles')
-    datetime = request.form.get('datetime')
+    timedate = request.form.get('datetime')
     # view_records = request.form.get('view-records')
     add_record = request.form.get('add-record')
 
-    if not miles or not datetime:
+    if not miles or not timedate:
         return redirect('/app')
 
     if add_record is not None:
-        date, time = datetime.split('T')
+        date, time = timedate.split(r'T')
 
         connection.ping()
         cursor = connection.cursor()
@@ -283,9 +283,9 @@ def update_record():
     connection.ping()
     cursor = connection.cursor()
 
-    datetime = request.form.get('update-datetime')
+    timedate = request.form.get('update-datetime')
     miles = request.form.get('update-miles')
-    date, time = datetime.split('T')
+    date, time = timedate.split(r'T')
     
     query = """
         UPDATE `records`
@@ -323,16 +323,10 @@ def delete_record():
     return redirect('/records')
 
 api = Api(server)
-# add_record_put_args = reqparse.RequestParser()
-# add_record_put_args.add_argument('username', type=str, help='Username', required=True)
-# add_record_put_args.add_argument('password', type=str, help='Password', required=True)
 
 class MostRecentRecordAPI(Resource):
 
     def get(self, username, password):
-
-        # args = add_record_put_args.parse_args()
-        # print(args)
 
         if not username or not password:
             return {}
@@ -372,6 +366,91 @@ class MostRecentRecordAPI(Resource):
 api.add_resource(
     MostRecentRecordAPI,
     '/api/mostrecent/<string:username>&<string:password>'
+)
+
+add_record_put_args = reqparse.RequestParser()
+add_record_put_args.add_argument('username', type=str, help='Username', required=True)
+add_record_put_args.add_argument('password', type=str, help='Password', required=True)
+add_record_put_args.add_argument('date', type=str, help='Date', required=False)
+add_record_put_args.add_argument('time', type=str, help='Time', required=False)
+add_record_put_args.add_argument('miles', type=str, help='Password', required=True)
+
+class RecordAPI(Resource):
+
+    def put(self):
+
+        # print('hello')
+        
+        args = add_record_put_args.parse_args()
+        # return args
+
+        username = args['username']
+        password = args['password']
+        miles = args['miles']
+
+        # print('here 1')
+
+        timedate = datetime.datetime.now().strftime(r'%Y-%m-%dT%H:%M')
+        parsed_date, parsed_time = timedate.split(r'T')
+        # date = args.get('date', parsed_date)
+        # time = args.get('time', parsed_time)
+        date = args['date'] if args['date'] else parsed_date
+        time = args['time'] if args['time'] else parsed_time
+
+        # print(date, time)
+
+        # print('here 2')
+        
+        # datetime = 
+        # date, time = datetime.split('T')
+
+        connection.ping()
+        cursor = connection.cursor()
+
+        query = """
+            SELECT * FROM `users` WHERE `username` LIKE "{}" LIMIT 1;
+        """.format(username)
+        cursor.execute(query)
+        users = cursor.fetchall()
+
+        user_id = users[0][0]
+        # print(user_id)
+        stored_password = users[0][2]
+
+        passwords_match = check_password_hash(stored_password, password)
+
+        if passwords_match:
+            # print(timedate, date, time)
+            query = """
+                INSERT INTO `records`
+                (`user_id`, `date`, `time`, `miles`)
+                VALUES ("{}", "{}", "{}", "{}")
+            """.format(user_id, date, time, miles)
+            cursor.execute(query)
+            connection.commit()
+
+            # print('here')
+
+            cursor.close()
+            connection.close()
+
+            # args['timedate'] = timedate
+            # args['pdate'] = date
+            # args['ptime'] = time
+            # args['type'] = str(type(args['date']))
+            # args['query'] = query
+
+            return args
+        else:
+            # return "Error", 500
+            cursor.close()
+            connection.close()
+            return args
+
+api.add_resource(
+    RecordAPI,
+    '/api/addrecord'
+    # '/api/addrecord/<string:username>&<string:password>'
 )
 
 if __name__ == '__main__':
