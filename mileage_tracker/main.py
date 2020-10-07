@@ -248,6 +248,60 @@ def records():
     else:
         return redirect('/')
 
+@server.route('/update')
+def update():
+    if not 'user_id' in session:
+        return redirect('/')
+    
+    record_id = int(request.args.get('record'))
+
+    visualizer = vis.Visualizer(connection, session['user_id'])
+    all_records = visualizer._records_df
+    match = all_records[all_records['id'] == record_id]
+
+    record = {
+        'id': record_id,
+        'miles': int(match['miles'].values[0]),
+        'datetime': match['datetime'].values[0],
+    }
+
+    return render_template(
+        'update.html',
+        user=session['username'],
+        record=record,
+    )
+
+@server.route('/update_record', methods=['POST'])
+def update_record():
+    if not 'user_id' in session:
+        return redirect('/')
+
+    print('here!')
+
+    record_id = request.args.get('record')
+
+    connection.ping()
+    cursor = connection.cursor()
+
+    datetime = request.form.get('update-datetime')
+    miles = request.form.get('update-miles')
+    date, time = datetime.split('T')
+    
+    query = """
+        UPDATE `records`
+        SET `date` = "{}", `time` = "{}", `miles` = "{}"
+        WHERE `user_id` LIKE "{}" AND `id` LIKE "{}";
+    """.format(date, time, miles, session['user_id'], record_id)
+    cursor.execute(query)
+    connection.commit()
+
+    print(date, time, miles)
+
+    cursor.close()
+    connection.close()
+
+    return redirect('/records')
+
 @server.route('/delete_record', methods=['GET'])
 def delete_record():
     if not 'user_id' in session:
