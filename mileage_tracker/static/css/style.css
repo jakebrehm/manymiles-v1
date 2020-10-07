@@ -57,13 +57,9 @@
     margin-right:-5px;
 }
 
-/* 
-.td-pad {
-    padding-left: 2rem !important;
-} */
-
-td {
+.record-cell {
     width: 25%;
+    text-align: center;
 }
 
 .neutral {
@@ -78,22 +74,12 @@ td {
     color: green;
 }
 
-/* Viewports of 525px or less */
-
-@media only screen and (max-width: 525px) {
-
-    .td-pad .record-btn:last-child {
-        margin-top: 0.25rem;
-    }
-
-}
-
 /* Viewports of 767px or less */
 
 @media only screen and (max-width: 767px) {
 
-    .td-pad {
-        padding-left: 1rem !important;
+    .record-cell .record-btn:last-child {
+        margin-top: 0.25rem;
     }
 
 }
