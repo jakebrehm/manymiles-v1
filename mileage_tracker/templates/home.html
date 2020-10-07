@@ -2,9 +2,11 @@
 
 {% block body %}
 
-    <div class="container vertical-center mt-100 mb-100">
+    <!-- <div class="container-fluid vertical-center mt-100 mb-100" style="background-color: red;"> -->
+    <div class="container mt-100 mb-100">
+        <!-- <div class="row mx-auto"> -->
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-4">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-header">Add or update records</h5><br>
@@ -14,10 +16,12 @@
                             <label>Date & Time</label><br>
                             <input type="datetime-local" class="form-control" name="datetime" value="{{ current_time }}"><br>
                             <div class="row">
-                                <div class="col-sm-6 gutter-5">
+                                <!-- <div class="col-sm-6 gutter-5"> -->
+                                <div class="col-6 gutter-5">
                                     <input type="submit" class="btn btn-secondary btn-block btn-lg" name="view-records" value="View records">
                                 </div>
-                                <div class="col-sm-6 gutter-5">
+                                <!-- <div class="col-sm-6 gutter-5"> -->
+                                <div class="col-6 gutter-5">
                                     <input type="submit" class="btn btn-primary btn-block btn-lg" name="add-record" value="Add record">
                                 </div>
                             </div>
@@ -55,7 +59,7 @@
                 </div>
             </div>
             
-            <div class="col-md-8">
+            <div class="col-8">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-header">Analysis</h5><br>
@@ -66,7 +70,7 @@
                                 <h4>budgeted, which leaves you</h4>
                                 <h4 class="neutral">{{ analysis['daily'] }} miles</h4>
                                 <h4>to use each day.</h4>
-                                <br>
+                                <br><hr><br>
                                 <h4>As of your most recent record,</h4>
                                 <h4>you are currently</h4>
                                 <h2 class="{{ analysis["over-under"] }}">

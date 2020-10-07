@@ -57,8 +57,13 @@
     margin-right:-5px;
 }
 
+/* 
 .td-pad {
     padding-left: 2rem !important;
+} */
+
+td {
+    width: 25%;
 }
 
 .neutral {
