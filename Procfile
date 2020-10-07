@@ -1,1 +1,1 @@
-web: gunicorn --chdir mileage_tracker main:app
+web: gunicorn --chdir mileage_tracker main:server
