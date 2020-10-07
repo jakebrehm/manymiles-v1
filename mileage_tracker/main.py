@@ -276,8 +276,6 @@ def update_record():
     if not 'user_id' in session:
         return redirect('/')
 
-    print('here!')
-
     record_id = request.args.get('record')
 
     connection.ping()
@@ -294,8 +292,6 @@ def update_record():
     """.format(date, time, miles, session['user_id'], record_id)
     cursor.execute(query)
     connection.commit()
-
-    print(date, time, miles)
 
     cursor.close()
     connection.close()

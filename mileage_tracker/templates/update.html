@@ -8,6 +8,14 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="/app">Home</a></li>
+                                <li class="breadcrumb-item"><a href="/records">Records</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Update Record</li>
+                            </ol>
+                        </nav>
+
                         <h5 class="card-header">Update record</h5><br>
                         <form method="post" action="/update_record?record={{ record["id"] }}">
                             <label>Miles</label>
