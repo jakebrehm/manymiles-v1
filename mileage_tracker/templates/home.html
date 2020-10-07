@@ -56,17 +56,27 @@
                     </div>
                 </div>
             </div>
+            
             <div class="col-md-8">
-                <!-- <h1 class="text-light display-4 mt-100" style="font-size: 80px;">Track your mileage</h1> -->
-
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-header">Analysis</h5><br>
-                        <p class="card-text">
-                            You have {{ analysis['budget'] }} miles budgeted, with a daily allowance of {{ analysis['daily'] }} miles.
-                        </p>
-                        <p class="card-text">
-                            As of the time of your last record, you are {{ analysis['overage'] }} miles {{ analysis['over-under'] }} your allowance.</p>
+                        <div class="text-center">
+                            <p class="card-text">
+                                <h4>Over the course of your goal, you have</h4>
+                                <h4 class="neutral">{{ analysis['budget'] }} miles</h4>
+                                <h4>budgeted, which leaves you</h4>
+                                <h4 class="neutral">{{ analysis['daily'] }} miles</h4>
+                                <h4>to use each day.</h4>
+                                <br>
+                                <h4>As of your most recent record,</h4>
+                                <h4>you are currently</h4>
+                                <h2 class="{{ analysis["over-under"] }}">
+                                    {{ analysis['overage'] }} miles {{ analysis['over-under'] }}
+                                </h2>
+                                <h4>your allowance.</h4>
+                            </p>
+                        </div>
                     </div>
                 </div>
 

@@ -61,6 +61,18 @@
     padding-left: 2rem !important;
 }
 
+.neutral {
+    color: blue;
+}
+
+.over {
+    color: red;
+}
+
+.under {
+    color: green;
+}
+
 /* Viewports of 525px or less */
 
 @media only screen and (max-width: 525px) {
