@@ -5,6 +5,7 @@ from configparser import ConfigParser
 
 import pymysql
 from flask import Flask, flash, redirect, render_template, request, session
+from flask_restful import Api, Resource, reqparse
 from werkzeug.security import check_password_hash, generate_password_hash
 
 import visualizations as vis
@@ -96,6 +97,7 @@ def login_validation():
 
     if not users:
         cursor.close()
+        connection.close()
         flash('No account seems to exist with that username.')
         return redirect('/')
 
@@ -319,6 +321,58 @@ def delete_record():
     connection.close()
 
     return redirect('/records')
+
+api = Api(server)
+# add_record_put_args = reqparse.RequestParser()
+# add_record_put_args.add_argument('username', type=str, help='Username', required=True)
+# add_record_put_args.add_argument('password', type=str, help='Password', required=True)
+
+class MostRecentRecordAPI(Resource):
+
+    def get(self, username, password):
+
+        # args = add_record_put_args.parse_args()
+        # print(args)
+
+        if not username or not password:
+            return {}
+
+        connection.ping()
+        cursor = connection.cursor()
+
+        query = """
+            SELECT * FROM `users` WHERE `username` LIKE "{}" LIMIT 1;
+        """.format(username)
+        cursor.execute(query)
+        users = cursor.fetchall()
+
+        user_id = users[0][0]
+        stored_password = users[0][2]
+
+        passwords_match = check_password_hash(stored_password, password)
+
+        cursor.close()
+        if passwords_match:
+            session['user_id'] = users[0][0]
+            session['username'] = users[0][1]
+
+            visualizer = vis.Visualizer(connection, user_id)
+            most_recent_record = visualizer.get_most_recent_record()
+
+            connection.close()
+            return {
+                'date': str(most_recent_record['date'].values[0]),
+                'time': str(most_recent_record['time'].values[0]),
+                'miles': int(most_recent_record['miles']),
+            }
+        else:
+            connection.close()
+            return {}
+
+api.add_resource(
+    MostRecentRecordAPI,
+    '/api/mostrecent/<string:username>&<string:password>'
+)
 
 if __name__ == '__main__':
     server.run(debug=True)
