@@ -29,7 +29,7 @@ CONFIG_LOCATION = os.path.join(PROJECT_FOLDER, 'data', 'config.ini')
 config = Configuration(CONFIG_LOCATION)
 
 server = Flask(__name__)
-server.secret_key = os.urandom(24)
+server.secret_key = config.get('SECRET_KEY', 'general', 'secret key')
 
 connection = pymysql.connect(
     host=config.get('CLEARDB_DATABASE_HOST', 'database', 'host'),
@@ -40,9 +40,6 @@ connection = pymysql.connect(
 
 @server.route('/')
 def login():
-
-    session.modified = True
-
     if 'user_id' in session and 'username' in session:
         return redirect('/app')
     else:
@@ -50,16 +47,10 @@ def login():
 
 @server.route('/register')
 def register():
-
-    session.modified = True
-
     return render_template('register.html')
 
 @server.route('/app')
 def app():
-
-    session.modified = True
-
     if 'user_id' in session and 'username' in session:
 
         connection.ping()
@@ -105,9 +96,6 @@ def app():
 
 @server.route('/login_validation', methods=['POST'])
 def login_validation():
-
-    session.modified = True
-
     username = request.form.get('username')
     password = request.form.get('password')
 
@@ -142,9 +130,6 @@ def login_validation():
 
 @server.route('/add_user', methods=['POST'])
 def add_user():
-
-    session.modified = True
-
     username = request.form.get('add-username')
     password = request.form.get('add-password')
     hashed = generate_password_hash(password)
@@ -187,9 +172,6 @@ def add_user():
 
 @server.route('/logout')
 def logout():
-
-    session.modified = True
-
     if 'user_id' in session:
         session.pop('user_id')
         session.pop('username')
@@ -197,9 +179,6 @@ def logout():
 
 @server.route('/update_goal', methods=['POST'])
 def update_goal():
-
-    session.modified = True
-
     start_miles = request.form.get('start-miles')
     start_date = request.form.get('start-date')
     end_miles = request.form.get('end-miles')
@@ -225,9 +204,6 @@ def update_goal():
 
 @server.route('/add_update_records', methods=['POST'])
 def add_record():
-
-    session.modified = True
-
     miles = request.form.get('miles')
     timedate = request.form.get('datetime')
     # view_records = request.form.get('view-records')
@@ -263,9 +239,6 @@ def add_record():
 
 @server.route('/records')
 def records():
-
-    session.modified = True
-
     if 'user_id' in session and 'username' in session:
 
         connection.ping()
@@ -292,9 +265,6 @@ def records():
 
 @server.route('/update')
 def update():
-
-    session.modified = True
-
     if not 'user_id' in session:
         return redirect('/')
     
@@ -318,9 +288,6 @@ def update():
 
 @server.route('/update_record', methods=['POST'])
 def update_record():
-
-    session.modified = True
-
     if not 'user_id' in session:
         return redirect('/')
 
@@ -348,9 +315,6 @@ def update_record():
 
 @server.route('/delete_record', methods=['GET'])
 def delete_record():
-
-    session.modified = True
-
     if not 'user_id' in session:
         return redirect('/')
 
