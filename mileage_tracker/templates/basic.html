@@ -17,16 +17,27 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
     </head>
     <body class="bg-nav">
-        <nav class="navbar">
-            <a href="/app" class="navbar-brand text-light">Mileage Tracker</a>
-            <div class="nav-menu">
-                <span class="navbar-text text-light">
-                    Hello, {{ user }}!
-                </span>
-                <!-- <button class="btn btn-secondary my-2 my-sm-0" type="submit"><a class="nav-link" href="/logout">Log out</a></button> -->
-                <button class="btn btn-outline-light my-2 my-sm-0 ml-2"><a class="text-light" href="/logout">Log out</a></button>
-            </div>
-        </nav>
+
+        <div class="main-menu">
+            <nav class="navbar fixed-top navbar-expand-lg navbar-dark navbar-default bg-primary">
+                <a class="navbar-brand" href="/app">Mileage Tracker</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item active">
+                            <span class="navbar-text text-light">
+                                Hello, {{ user }}!
+                            </span>
+                        </li>
+                        <li class="nav-item">
+                            <button class="btn btn-outline-light my-2 my-sm-0 ml-2"><a class="text-light" href="/logout">Log out</a></button>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
 
         <!-- Custom body block -->
         {% block body %}{% endblock %}
