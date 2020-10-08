@@ -32,8 +32,10 @@
                                             <td class="record-cell">{{ record[2] }}</td>
                                             <td class="record-cell">{{ record[3] }}</td>
                                             <td class="record-cell">
-                                                <a href="/update?record={{ record[0] }}" class="btn btn-primary btn-sm" role="button">Modify</a>
-                                                <a href="/delete_record?record={{ record[0] }}" class="btn btn-danger btn-sm record-btn" role="button">Delete</a>
+                                                <!-- <a href="/update?record={{ record[0] }}" class="btn btn-primary btn-sm" role="button">Modify</a>
+                                                <a href="/delete_record?record={{ record[0] }}" class="btn btn-danger btn-sm record-btn" role="button">Delete</a> -->
+                                                <a href="/update?record={{ record[0] }}" class="btn btn-primary btn-sm" role="button"><i class="fa fa-edit fa-fw"></i></a>
+                                                <a href="/delete_record?record={{ record[0] }}" class="btn btn-danger btn-sm record-btn" role="button"><i class="fa fa-trash-o fa-fw"></i></a>
                                             </td>
                                         </tr>
                                     {% endfor %}
