@@ -75,10 +75,7 @@ def app():
         analysis = visualizer.perform_analysis()
 
         most_recent_record = visualizer.get_most_recent_record()
-        if not most_recent_record.empty:
-            most_recent_mileage = int(most_recent_record['miles'])
-        else:
-            most_recent_mileage = None
+        most_recent_mileage = int(most_recent_record['miles'])
 
         cursor.close()
         connection.close()
@@ -212,7 +209,7 @@ def add_record():
     # view_records = request.form.get('view-records')
     add_record = request.form.get('add-record')
 
-    if add_record and (not miles or not timedate):
+    if not miles or not timedate:
         return redirect('/app')
 
     if add_record is not None:
@@ -254,7 +251,6 @@ def records():
         times = all_records['time'].tolist()
         miles = all_records['miles'].tolist()
         processed_records = zip(ids, dates, times, miles)
-        empty = not list(zip(ids, dates, times, miles))
 
         cursor.close()
         connection.close()
@@ -263,7 +259,6 @@ def records():
             'records.html',
             user=session['username'],
             records=processed_records,
-            empty=empty,
         )
     else:
         return redirect('/')
@@ -446,4 +441,4 @@ api.add_resource(
 )
 
 if __name__ == '__main__':
-    server.run(debug=True)
+    server.run(debug=False)

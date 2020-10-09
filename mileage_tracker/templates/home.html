@@ -63,132 +63,123 @@
                         <h5 class="card-header">Analysis</h5><br>
                         <div class="text-center">
                             <p class="card-text">
-                                {% if analysis['valid'] %}
-                                    <h4>Over the course of your goal, you have</h4>
-                                    <h4 class="neutral">{{ analysis['budget'] }} miles</h4>
-                                    <h4>budgeted, which leaves you</h4>
-                                    <h4 class="neutral">{{ analysis['daily'] }} miles</h4>
-                                    <h4>to use each day.</h4>
-                                    <br><hr><br>
-                                    <h4>As of your most recent record,</h4>
-                                    <h4>you are currently</h4>
-                                    <h2 class="{{ analysis["over-under"] }}">
-                                        {{ analysis['overage'] }} miles {{ analysis['over-under'] }}
-                                    </h2>
-                                    <h4>your allowance.</h4>
-                                {% else %}
-                                    <h4>Please enter a goal.</h4>
-                                {% endif %}
+                                <h4>Over the course of your goal, you have</h4>
+                                <h4 class="neutral">{{ analysis['budget'] }} miles</h4>
+                                <h4>budgeted, which leaves you</h4>
+                                <h4 class="neutral">{{ analysis['daily'] }} miles</h4>
+                                <h4>to use each day.</h4>
+                                <br><hr><br>
+                                <h4>As of your most recent record,</h4>
+                                <h4>you are currently</h4>
+                                <h2 class="{{ analysis["over-under"] }}">
+                                    {{ analysis['overage'] }} miles {{ analysis['over-under'] }}
+                                </h2>
+                                <h4>your allowance.</h4>
                             </p>
                         </div>
                     </div>
                 </div>
 
-                {% if total_mileage_plot %}
-                    <div class="card mt-25">
-                        <div class="card-body">
-                            <h5 class="card-header">Mileage over time</h5>
-                            <div class="chart" id="total-mileage">
-                                <script>
-                                    var graphs = {{total_mileage_plot | safe}};
-                                    var config = {
-                                        responsive: true,
-                                        scrollZoom: true,
-                                    };
-                                    var layout = {
-                                        xaxis: {
-                                            title: 'Date',
-                                            titlefont: {
-                                                family: 'Arial, sans-serif',
-                                                size: 14,
-                                                color: 'grey',
-                                            },
+                <div class="card mt-25">
+                    <div class="card-body">
+                        <h5 class="card-header">Mileage over time</h5>
+                        <div class="chart" id="total-mileage">
+                            <script>
+                                var graphs = {{total_mileage_plot | safe}};
+                                var config = {
+                                    responsive: true,
+                                    scrollZoom: true,
+                                };
+                                var layout = {
+                                    xaxis: {
+                                        title: 'Date',
+                                        titlefont: {
+                                            family: 'Arial, sans-serif',
+                                            size: 14,
+                                            color: 'grey',
                                         },
-                                        yaxis: {
-                                            title: 'Miles',
-                                            titlefont: {
-                                                family: 'Arial, sans-serif',
-                                                size: 14,
-                                                color: 'grey',
-                                            },
+                                    },
+                                    yaxis: {
+                                        title: 'Miles',
+                                        titlefont: {
+                                            family: 'Arial, sans-serif',
+                                            size: 14,
+                                            color: 'grey',
                                         },
-                                        legend: {
-                                            x: 0.025,
-                                            xanchor: 'left',
-                                            y: 0.975,
-                                        },
-                                        margin: {
-                                            l: 60,
-                                            r: 40,
-                                            b: 60,
-                                            t: 20,
-                                        }
-                                    };
-                                    Plotly.plot(
-                                        'total-mileage',
-                                        graphs,
-                                        layout,
-                                        config,
-                                    );
-                                </script>
-                            </div>
-                        </div>
-                    </div>
-                {% endif %}
-
-                {% if daily_change_plot %}
-                    <div class="card mt-25">
-                        <div class="card-body">
-                            <h5 class="card-header">Mileage change day to day</h5>
-                            <div class="chart" id="daily-change">
-                                <script>
-                                    var graphs = {{daily_change_plot | safe}};
-                                    var config = {
-                                        responsive: true,
-                                        scrollZoom: true,
-                                    };
-                                    var layout = {
-                                        xaxis: {
-                                            title: 'Date',
-                                            titlefont: {
-                                                family: 'Arial, sans-serif',
-                                                size: 14,
-                                                color: 'grey',
-                                            },
-                                        },
-                                        yaxis: {
-                                            title: 'Mileage change',
-                                            titlefont: {
-                                                family: 'Arial, sans-serif',
-                                                size: 14,
-                                                color: 'grey',
-                                            },
-                                        },
-                                        legend: {
-                                            x: 0.025,
-                                            xanchor: 'left',
-                                            y: 0.975,
-                                        },
-                                        margin: {
-                                            l: 60,
-                                            r: 40,
-                                            b: 60,
-                                            t: 20,
-                                        }
-                                    };
-                                    Plotly.plot(
-                                        'daily-change',
-                                        graphs,
-                                        layout,
-                                        config,
-                                    );
-                                </script>
-                            </div>
+                                    },
+                                    legend: {
+                                        x: 0.025,
+                                        xanchor: 'left',
+                                        y: 0.975,
+                                    },
+                                    margin: {
+                                        l: 60,
+                                        r: 40,
+                                        b: 60,
+                                        t: 20,
+                                    }
+                                };
+                                Plotly.plot(
+                                    'total-mileage',
+                                    graphs,
+                                    layout,
+                                    config,
+                                );
+                            </script>
                         </div>
                     </div>
                 </div>
-            {% endif %}
 
+                <div class="card mt-25">
+                    <div class="card-body">
+                        <h5 class="card-header">Mileage change day to day</h5>
+                        <div class="chart" id="daily-change">
+                            <script>
+                                var graphs = {{daily_change_plot | safe}};
+                                var config = {
+                                    responsive: true,
+                                    scrollZoom: true,
+                                };
+                                var layout = {
+                                    xaxis: {
+                                        title: 'Date',
+                                        titlefont: {
+                                            family: 'Arial, sans-serif',
+                                            size: 14,
+                                            color: 'grey',
+                                        },
+                                    },
+                                    yaxis: {
+                                        title: 'Mileage change',
+                                        titlefont: {
+                                            family: 'Arial, sans-serif',
+                                            size: 14,
+                                            color: 'grey',
+                                        },
+                                    },
+                                    legend: {
+                                        x: 0.025,
+                                        xanchor: 'left',
+                                        y: 0.975,
+                                    },
+                                    margin: {
+                                        l: 60,
+                                        r: 40,
+                                        b: 60,
+                                        t: 20,
+                                    }
+                                };
+                                Plotly.plot(
+                                    'daily-change',
+                                    graphs,
+                                    layout,
+                                    config,
+                                );
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
