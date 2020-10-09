@@ -18,36 +18,48 @@ class Visualizer:
         self._records = self._query_database(query)
 
         df = pd.DataFrame(self._records)
-        df.columns = ['id', 'user_id', 'date', 'time', 'miles']
-        df['datetime'] = df['date'] + "T" + df['time']
-        pd.to_datetime(df['datetime'])
-        df.sort_values(by='datetime')
-        self._records_df = df
+        if not df.empty:
+            df.columns = ['id', 'user_id', 'date', 'time', 'miles']
+            df['datetime'] = df['date'] + "T" + df['time']
+            pd.to_datetime(df['datetime'])
+            df.sort_values(by='datetime')
+            self._records_df = df
+        else:
+            self._records_df = pd.DataFrame({
+                'id': [], 'user_id': [], 'miles': [],
+                'date': [], 'time': [], 'datetime': [],
+            })
 
         query = """
             SELECT * FROM `goals` WHERE `user_id` LIKE {} LIMIT 1;
         """.format(self._user_id)
-        self._goals = self._query_database(query)[0]
+        query_result = self._query_database(query)
+        if query_result:
+            self._goals = query_result[0]
 
-        start_date, end_date = self._goals[1], self._goals[2]
-        start_miles, end_miles = self._goals[3], self._goals[4]
+            start_date, end_date = self._goals[1], self._goals[2]
+            start_miles, end_miles = self._goals[3], self._goals[4]
 
-        optimal_dates = [start_date, end_date]
-        optimal_miles = [start_miles, end_miles]
-        
-        dates = pd.period_range(min(optimal_dates), max(optimal_dates))
-        dates = dates.strftime(r'%Y-%m-%dT11:59').tolist()
-        miles = [None] * len(dates)
-        miles[0], miles[-1] = optimal_miles[0], optimal_miles[-1]
+            optimal_dates = [start_date, end_date]
+            optimal_miles = [start_miles, end_miles]
+            
+            dates = pd.period_range(min(optimal_dates), max(optimal_dates))
+            dates = dates.strftime(r'%Y-%m-%dT11:59').tolist()
+            miles = [None] * len(dates)
+            miles[0], miles[-1] = optimal_miles[0], optimal_miles[-1]
 
-        optimal = pd.DataFrame(zip(dates, miles), columns=['date', 'miles'])
-        optimal['miles'] = optimal['miles'].interpolate()
-        pd.to_datetime(optimal['date'])
+            optimal = pd.DataFrame(zip(dates, miles), columns=['date', 'miles'])
+            optimal['miles'] = optimal['miles'].interpolate()
+            pd.to_datetime(optimal['date'])
 
-        self._daily_mileage = (end_miles - start_miles) / (len(optimal)-1)
-        optimal['miles'] += self._daily_mileage
+            self._daily_mileage = (end_miles - start_miles) / (len(optimal)-1)
+            optimal['miles'] += self._daily_mileage
 
-        self._optimal_df = optimal
+            self._optimal_df = optimal
+        else:
+            self._goals = None
+            self._daily_mileage = None
+            self._optimal_df = pd.DataFrame({'date': [], 'miles': []})
 
     def _query_database(self, query):
 
@@ -64,6 +76,8 @@ class Visualizer:
         return records
 
     def _get_optimal_mileages(self):
+        if self._optimal_df.empty:
+            return None
         optimal = self._optimal_df.copy()
         return optimal[optimal['date'] <= max(self._records_df['datetime'])]
 
@@ -76,9 +90,23 @@ class Visualizer:
 
     def get_most_recent_record(self):
         actual = self._records_df.copy()
+        if actual.empty:
+            return pd.DataFrame({
+                'id': [], 'user_id': [], 'miles': [],
+                'date': [], 'time': [], 'datetime': [],
+            })
         return actual[actual['datetime'] == max(actual['datetime'])]
 
     def perform_analysis(self):
+        if not self._goals:
+            return {
+                'valid': False,
+                'budget': None,
+                'daily': None,
+                'overage': None,
+                'over-under': None,
+            }
+        
         start_miles, end_miles = self._goals[3], self._goals[4]
 
         optimal_miles = self._get_current_optimal_mileage()
@@ -87,6 +115,7 @@ class Visualizer:
         overage = optimal_miles.values[0] - actual_miles.values[0]
 
         return {
+            'valid': True,
             'budget': end_miles - start_miles,
             'daily': f'{self._daily_mileage:0.2f}',
             'overage': f'{abs(overage):0.2f}',
@@ -95,7 +124,18 @@ class Visualizer:
 
     def create_total_mileage_plot(self):
 
+        # TODO: scroll to top and scroll to bottom record buttons
+        # TODO: find another solution for datetime inputs
+        # TODO: make a change password page
+        # TODO: should fill empty dates with last known mileage
+
         optimal = self._get_optimal_mileages()
+
+        if isinstance(optimal, pd.DataFrame):
+            if optimal.empty:
+                return None
+        elif not optimal:
+            return None
 
         data = [
             go.Scatter(
@@ -118,6 +158,9 @@ class Visualizer:
 
     def create_daily_change_plot(self):
         
+        if self._records_df.empty:
+            return None
+
         records = self._records_df.copy()
         records['datetime'] = pd.to_datetime(records['datetime'])
         records.index = records['datetime']
