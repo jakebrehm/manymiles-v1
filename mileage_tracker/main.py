@@ -245,7 +245,7 @@ def records():
         cursor = connection.cursor()
 
         visualizer = vis.Visualizer(connection, session['user_id'])
-        all_records = visualizer._records_df
+        all_records = visualizer._records_df.iloc[::-1]
         ids = all_records['id'].tolist()
         dates = all_records['date'].tolist()
         times = all_records['time'].tolist()
