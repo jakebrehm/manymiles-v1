@@ -74,6 +74,31 @@
     color: green;
 }
 
+/* Viewports of 575px or less */
+
+@media only screen and (max-width: 575px) {
+
+    .col-sm-mt {
+        padding-top: 10px;
+    }
+
+    [class*="col-"].gutter-5:first-child {
+        padding-left:15px;
+    }
+    [class*="col-"].gutter-5:last-child {
+        padding-right:15px;
+    }
+    [class*="col-"].gutter-5 {
+        padding-left:15px;
+        padding-right:15px;
+    }
+    .row.gutter-5 {
+        margin-left:0;
+        margin-right:0;
+    }
+
+}
+
 /* Viewports of 767px or less */
 
 @media only screen and (max-width: 767px) {
