@@ -15,15 +15,15 @@ class Visualizer:
         self._user_id = user_id
 
         # Initialize other parameters
-        self._all_records_df = self._get_all_records()
+        self._all_records = self._get_all_records()
         self._goals = self._get_goals()
         self._daily_mileage = self._determine_daily_mileage()
-        self._optimal_miles_df = self._determine_optimal_miles()
+        self._optimal_miles = self._determine_optimal_miles()
         self._most_recent_record = self._get_most_recent_record()
 
     @property
     def all_records(self):
-        return self._all_records_df
+        return self._all_records
 
     @property
     def goals(self):
@@ -31,7 +31,7 @@ class Visualizer:
     
     @property
     def optimal_miles(self):
-        return self._optimal_miles_df
+        return self._optimal_miles
     
     @property
     def daily_mileage(self):
@@ -79,41 +79,48 @@ class Visualizer:
         optimal_miles = self._get_optimal_mileage_on_date()
         actual_miles = self._get_most_recent_mileage()
 
-        #
-        items = [goals, optimal_miles, actual_miles]
-        if any(self._is_null(item) for item in items):
-            return analysis
-        # 
-        analysis['valid'] = True
+        if not self._is_null(goals):
+            # 
+            analysis['valid'] = True
 
-        # Note the start and end mileages of the user's goal
-        start_miles = goals['start_miles'].values[0]
-        end_miles = goals['end_miles'].values[0]
-        analysis['budget'] = end_miles - start_miles
+            # Note the start and end mileages of the user's goal
+            start_miles = goals['start_miles'].values[0]
+            end_miles = goals['end_miles'].values[0]
+            analysis['budget'] = end_miles - start_miles
 
-        # 
-        overage = optimal_miles - actual_miles
-        analysis['overage'] = f'{abs(overage):0.2f}'
-        analysis['over-under'] = 'under' if overage >= 0 else 'over'
+            # 
+            analysis['daily'] = f'{self.daily_mileage:0.2f}'
 
+            # Secondary requirement for overage and under-over
+            requirements = [optimal_miles, actual_miles]
+            if not any(self._is_null(item) for item in requirements):
+                # 
+                overage = optimal_miles - actual_miles
+                analysis['overage'] = f'{abs(overage):0.2f}'
+                analysis['over-under'] = 'under' if overage >= 0 else 'over'
+        
         # 
-        analysis['daily'] = f'{self.daily_mileage:0.2f}'
         return analysis
 
     def create_total_mileage_plot(self):
 
         # 
+        all_records = self.all_records.copy()
         optimal_to_most_recent_date = self._get_optimal_mileages_to_date()
 
         # 
         if self._is_null(optimal_to_most_recent_date):
             return None
 
+        # Return None until there are at least two records
+        if len(all_records) < 2:
+            return None
+
         # 
         data = [
             go.Scatter(
-                x=self.all_records['datetime'],
-                y=self.all_records['miles'],
+                x=all_records['datetime'],
+                y=all_records['miles'],
                 name='Actual',
                 hovertemplate='<b>%{x}</b><br>%{y:0.2f} miles'
             ),
@@ -146,6 +153,14 @@ class Visualizer:
         # 
         differences = pd.DataFrame()
         differences['miles'] = records['miles'].diff()
+
+        # print(differences)
+        # print(differences['miles'].isnull().all())
+        # TODO: figure out whether or not to backfill
+
+        # Return None until there are at least two records
+        if self._is_null(differences) or differences['miles'].isnull().all():
+            return None
 
         # 
         data = [
