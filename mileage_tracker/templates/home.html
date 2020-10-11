@@ -63,6 +63,9 @@
                         <h5 class="card-header">Analysis</h5><br>
                         <div class="text-center">
                             <p class="card-text">
+                                {% if not analysis['valid'] %}
+                                <h4>You have not entered any records yet.</h4>
+                                {% else %}
                                 <h4>Over the course of your goal, you have</h4>
                                 <h4 class="neutral">{{ analysis['budget'] }} miles</h4>
                                 <h4>budgeted, which leaves you</h4>
@@ -75,11 +78,13 @@
                                     {{ analysis['overage'] }} miles {{ analysis['over-under'] }}
                                 </h2>
                                 <h4>your allowance.</h4>
+                                {% endif %}
                             </p>
                         </div>
                     </div>
                 </div>
 
+                {% if total_mileage_plot %}
                 <div class="card mt-25">
                     <div class="card-body">
                         <h5 class="card-header">Mileage over time</h5>
@@ -129,7 +134,9 @@
                         </div>
                     </div>
                 </div>
+                {% endif %}
 
+                {% if daily_change_plot %}
                 <div class="card mt-25">
                     <div class="card-body">
                         <h5 class="card-header">Mileage change day to day</h5>
@@ -179,6 +186,7 @@
                         </div>
                     </div>
                 </div>
+                {% endif %}
             </div>
         </div>
     </div>

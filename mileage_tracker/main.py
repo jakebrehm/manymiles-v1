@@ -54,33 +54,22 @@ def app():
     if 'user_id' in session and 'username' in session:
 
         connection.ping()
-        cursor = connection.cursor()
-        
-        query = """
-            SELECT * FROM `goals` WHERE `user_id` LIKE "{}" LIMIT 1;
-        """.format(session['user_id'])
-        cursor.execute(query)
-        match = cursor.fetchall()
-
-        goal = {
-            'start_date': match[0][1] if match else None,
-            'end_date': match[0][2] if match else None,
-            'start_miles': match[0][3] if match else None,
-            'end_miles': match[0][4] if match else None,
-        }
 
         visualizer = vis.Visualizer(connection, session['user_id'])
         total_mileage_plot = visualizer.create_total_mileage_plot()
         daily_change_plot = visualizer.create_daily_change_plot()
         analysis = visualizer.perform_analysis()
 
-        most_recent_record = visualizer.get_most_recent_record()
-        most_recent_mileage = int(most_recent_record['miles'])
+        goal = visualizer.get_goal_as_dict()
 
-        cursor.close()
+        # most_recent_record = visualizer.most_recent_record
+        # most_recent_mileage = int(most_recent_record['miles'])
+        most_recent_mileage = visualizer.most_recent_mileage
+
         connection.close()
 
         # TODO: Verify that current_time is timezone independent
+        print(analysis)
         return render_template(
             'home.html',
             user=session['username'],
@@ -245,7 +234,7 @@ def records():
         cursor = connection.cursor()
 
         visualizer = vis.Visualizer(connection, session['user_id'])
-        all_records = visualizer._records_df.iloc[::-1]
+        all_records = visualizer.all_records.iloc[::-1]
         ids = all_records['id'].tolist()
         dates = all_records['date'].tolist()
         times = all_records['time'].tolist()
@@ -271,7 +260,7 @@ def update():
     record_id = int(request.args.get('record'))
 
     visualizer = vis.Visualizer(connection, session['user_id'])
-    all_records = visualizer._records_df
+    all_records = visualizer.all_records
     match = all_records[all_records['id'] == record_id]
 
     record = {
@@ -441,4 +430,4 @@ api.add_resource(
 )
 
 if __name__ == '__main__':
-    server.run(debug=False)
+    server.run(debug=True)
