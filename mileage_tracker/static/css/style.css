@@ -16,6 +16,10 @@
     opacity: 100%;
 }
 
+.mr-10 {
+    margin-right: 10px;
+}
+
 .mt-25 {
     margin-top: 25px;
 }
@@ -80,6 +84,15 @@
     color: green;
 }
 
+.slogan-lg {
+    font-size: 80px !important;
+}
+
+.slogan-md {
+    font-size: 50px !important;
+    margin-bottom: 50px;
+}
+
 /* Viewports of 575px or less */
 
 @media only screen and (max-width: 575px) {
@@ -108,9 +121,17 @@
 /* Viewports of 767px or less */
 
 @media only screen and (max-width: 767px) {
+    
+    .vertical-margins {
+        margin: 50px auto;
+    }
 
-    .slogan {
-        font-size: 50px !important;
+    .slogan-lg {
+        font-size: 40px !important;
+    }
+
+    .slogan-md {
+        font-size: 20px !important;
         margin-bottom: 50px;
     }
 
