@@ -56,33 +56,6 @@
                     </div>
                 </div>
             </div>
-<!--             
-            <div class="col-lg-8">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-header">Analysis</h5><br>
-                        <div class="text-center">
-                            <p class="card-text">
-                                {% if not analysis['valid'] %}
-                                <h4>Please enter a goal and at least two records to see the analysis.</h4>
-                                {% else %}
-                                <h4>Over the course of your goal, you have</h4>
-                                <h4 class="neutral">{{ analysis['budget'] }} miles</h4>
-                                <h4>budgeted, which leaves you</h4>
-                                <h4 class="neutral">{{ analysis['daily'] }} miles</h4>
-                                <h4>to use each day.</h4>
-                                <br><hr><br>
-                                <h4>As of your most recent record,</h4>
-                                <h4>you are currently</h4>
-                                <h2 class="{{ analysis["over-under"] }}">
-                                    {{ analysis['overage'] }} miles {{ analysis['over-under'] }}
-                                </h2>
-                                <h4>your allowance.</h4>
-                                {% endif %}
-                            </p>
-                        </div>
-                    </div>
-                </div> -->
             
             <div class="col-lg-8">
                 <div class="card">
@@ -91,7 +64,14 @@
                         <div class="text-center">
                             <p class="card-text">
                                 {% if not analysis['valid'] %}
-                                <h4>Please enter a goal to see the analysis.</h4>
+                                <h4 class="card-title text-center">Please enter a goal to see the analysis.</h4>
+                                <p class="card-text text-center">
+                                    Once you have entered a goal, you will be able to view the number of miles you can safely use.
+                                    You will also be able to see how many miles you can drive per day.
+                                </p>
+                                <p class="card-text text-center">
+                                    Once you have added some records, more detailed statistics and plots will be available to you.
+                                </p>
 
                                 {% else %}
 

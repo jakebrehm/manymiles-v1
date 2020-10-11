@@ -58,13 +58,8 @@ def app():
         visualizer = vis.Visualizer(connection, session['user_id'])
         total_mileage_plot = visualizer.create_total_mileage_plot()
         daily_change_plot = visualizer.create_daily_change_plot()
-        # print(daily_change_plot)
         analysis = visualizer.perform_analysis()
-
         goal = visualizer.get_goal_as_dict()
-
-        # most_recent_record = visualizer.most_recent_record
-        # most_recent_mileage = int(most_recent_record['miles'])
         most_recent_mileage = visualizer.most_recent_mileage
 
         connection.close()
@@ -195,13 +190,17 @@ def update_goal():
 def add_record():
     miles = request.form.get('miles')
     timedate = request.form.get('datetime')
-    # view_records = request.form.get('view-records')
+    view_records = request.form.get('view-records')
     add_record = request.form.get('add-record')
 
-    if not miles or not timedate:
-        return redirect('/app')
+    if view_records:
+        return redirect('/records')
 
-    if add_record is not None:
+    if add_record:
+
+        if not miles or not timedate:
+            return redirect('/app')
+        
         date, time = timedate.split(r'T')
 
         connection.ping()
@@ -231,17 +230,18 @@ def records():
     if 'user_id' in session and 'username' in session:
 
         connection.ping()
-        cursor = connection.cursor()
 
         visualizer = vis.Visualizer(connection, session['user_id'])
         all_records = visualizer.all_records.iloc[::-1]
-        ids = all_records['id'].tolist()
-        dates = all_records['date'].tolist()
-        times = all_records['time'].tolist()
-        miles = all_records['miles'].tolist()
-        processed_records = zip(ids, dates, times, miles)
+        if all_records.empty:
+            processed_records = None
+        else:
+            ids = all_records['id'].tolist()
+            dates = all_records['date'].tolist()
+            times = all_records['time'].tolist()
+            miles = all_records['miles'].tolist()
+            processed_records = list(zip(ids, dates, times, miles))
 
-        cursor.close()
         connection.close()
 
         return render_template(
