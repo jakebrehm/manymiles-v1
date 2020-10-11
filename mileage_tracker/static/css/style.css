@@ -1,10 +1,10 @@
-.bg-nav {
+.bg-gradient {
     background: #232526;  /* fallback for old browsers */
     background: -webkit-linear-gradient(to right, #414345, #232526);  /* Chrome 10-25, Safari 5.1-6 */
     background: linear-gradient(to right, #414345, #232526); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
-.transparent {
+.nav-transparent {
     opacity: 50%;
     transition: opacity .5s ease-out;
     -moz-transition: opacity .5s ease-out;
@@ -12,7 +12,7 @@
     -o-transition: opacity .5s ease-out;
 }
 
-.transparent:hover {
+.nav-transparent:hover {
     opacity: 100%;
 }
 
@@ -22,14 +22,6 @@
 
 .mt-25 {
     margin-top: 25px;
-}
-
-.mb-25 {
-    margin-bottom: 25px;
-}
-
-.mt-75 {
-    margin-top: 75px;
 }
 
 .mt-100 {
@@ -46,7 +38,7 @@
   
     display: flex;
     align-items: center;
-  }
+}
 
 .space {
     justify-content: right;
@@ -73,15 +65,15 @@
 }
 
 .neutral {
-    color: blue;
+    color: royalblue;
 }
 
 .over {
-    color: red;
+    color: rgba(224, 60, 60, 0.86);
 }
 
 .under {
-    color: green;
+    color: seagreen;
 }
 
 .slogan-lg {
