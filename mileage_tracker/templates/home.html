@@ -108,7 +108,15 @@
                                 var graphs = {{total_mileage_plot | safe}};
                                 var config = {
                                     responsive: true,
-                                    scrollZoom: true,
+                                    // scrollZoom: true,
+                                    displayModeBar: false,
+                                    displaylogo: false,
+                                    modeBarButtonsToRemove: [
+                                        'hoverClosestCartesian',
+                                        'hoverCompareCartesian',
+                                        'toggleSpikelines',
+                                        'toImage',
+                                    ],
                                 };
                                 var layout = {
                                     xaxis: {
@@ -163,7 +171,15 @@
                                 var graphs = {{daily_change_plot | safe}};
                                 var config = {
                                     responsive: true,
-                                    scrollZoom: true,
+                                    // scrollZoom: true,
+                                    displayModeBar: false,
+                                    displaylogo: false,
+                                    modeBarButtonsToRemove: [
+                                        'hoverClosestCartesian',
+                                        'hoverCompareCartesian',
+                                        'toggleSpikelines',
+                                        'toImage',
+                                    ],
                                 };
                                 var layout = {
                                     xaxis: {
