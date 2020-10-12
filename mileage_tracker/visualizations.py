@@ -181,20 +181,6 @@ class Visualizer:
 
         # 
         return json.dumps(data, cls=plotly.utils.PlotlyJSONEncoder)
-
-    def _query_database(self, query):
-
-        # Ping the connection to wake it and create a cursor
-        self._connection.ping()
-        cursor = self._connection.cursor()
-        # Execute the query and fetch the results
-        cursor.execute(query)
-        results = cursor.fetchall()
-        # Close the cursor and connection
-        cursor.close()
-        # self._connection.close()
-        # Return the results
-        return results
     
     def _is_null(self, item):
 
@@ -207,7 +193,7 @@ class Visualizer:
         query = """
             SELECT * FROM `records` WHERE `user_id` LIKE {};
         """.format(self._user_id)
-        records = self._query_database(query)
+        records = self._connection.fetch(query)
         
         # Return if the user has no records
         if self._is_null(records):
@@ -226,7 +212,7 @@ class Visualizer:
         query = """
             SELECT * FROM `goals` WHERE `user_id` LIKE {} LIMIT 1;
         """.format(self._user_id)
-        result = self._query_database(query)
+        result = self._connection.fetch(query)
         
         # Return if the user has no goal
         if self._is_null(result):

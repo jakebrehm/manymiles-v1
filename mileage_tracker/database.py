@@ -27,6 +27,8 @@ class Connection:
 
     @property
     def connection(self):
+
+        # 
         if self.is_open:
             return self._connection
         else:
@@ -50,7 +52,7 @@ class Connection:
         self.connection.close()
 
     @connection_required
-    def query(self, query, commit=False):
+    def fetch(self, query, commit=False):
 
         # Create a cursor
         cursor = self.connection.cursor()
@@ -68,21 +70,7 @@ class Connection:
 
     @connection_required
     def execute(self, query):
-        self.query(query, commit=True)
-
-    # def query(self, query):
-
-    #     # Ping the connection to wake it and create a cursor
-    #     self.connection.ping()
-    #     cursor = self.connection.cursor()
-    #     # Execute the query and fetch the results
-    #     cursor.execute(query)
-    #     results = cursor.fetchall()
-    #     # Close the cursor and connection
-    #     cursor.close()
-    #     # self.connection.close()
-    #     # Return the results
-    #     return results
+        self.fetch(query, commit=True)
 
 
 if __name__ == '__main__':
@@ -103,14 +91,14 @@ if __name__ == '__main__':
     query = """
         SELECT * FROM `users` WHERE `username` LIKE "{}" LIMIT 1;
     """.format(username)
-    result = db.query(query)
+    result = db.fetch(query)
     print(result)
 
     query = """
         INSERT INTO `users` (`id`, `username`, `password`)
         VALUES (NULL, "{}", "{}");
     """.format('test', 'test')
-    result = db.query(query, commit=True)
+    result = db.fetch(query, commit=True)
     print(result)
 
     query = """
