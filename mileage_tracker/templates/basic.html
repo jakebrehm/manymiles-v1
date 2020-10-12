@@ -5,7 +5,7 @@
         <!-- Required meta tags -->
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>Many Miles</title>
+        <title>ManyMiles</title>
 
         <!-- Custom CSS -->
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
@@ -23,22 +23,22 @@
 
         <div class="main-menu">
             <nav class="navbar fixed-top nav-transparent navbar-expand-lg navbar-dark navbar-default bg-dark">
-                <a class="navbar-brand" href="/app">Many Miles</a>
+                <a class="navbar-brand" href="/app">ManyMiles</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle text-light" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Hello, <b>{{ user }}</b>!
                             </a>
-                            <!-- <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="#">Import data</a>
-                                <a class="dropdown-item" href="#">Export data</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#">Change password</a>
-                            </div> -->
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <!-- <a class="dropdown-item" href="#">Import data</a> -->
+                                <a class="dropdown-item" href="/export">Export data</a>
+                                <!-- <div class="dropdown-divider"></div> -->
+                                <!-- <a class="dropdown-item" href="#">Change password</a> -->
+                            </div>
                         </li>
                         <li class="nav-item">
                             <a class="text-light" href="/logout"><button class="btn btn-outline-light my-2 my-sm-0 ml-2">Log out</button></a>

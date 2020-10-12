@@ -1,3 +1,4 @@
+import io
 import json
 
 import numpy as np
@@ -182,6 +183,28 @@ class Visualizer:
         # 
         return json.dumps(data, cls=plotly.utils.PlotlyJSONEncoder)
     
+    def records_to_csv(self, file_handle=None):
+
+        # 
+        if self._is_null(self.all_records):
+            return None
+
+        # 
+        records = self.all_records.copy()[['date', 'time', 'miles']]
+
+        # 
+        output = io.StringIO()
+
+        # 
+        records.to_csv(output, sep=',', encoding='utf-8', index=False)
+        contents = output.getvalue()
+
+        # 
+        output.close()
+
+        # 
+        return contents
+
     def _is_null(self, item):
 
         # 

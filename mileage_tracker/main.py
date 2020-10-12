@@ -1,6 +1,6 @@
 import datetime
 
-from flask import Flask, flash, redirect, render_template, request, session
+from flask import Flask, flash, redirect, render_template, request, session, Response
 from flask_restful import Api, Resource, reqparse
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -252,6 +252,23 @@ def delete_record():
 
     return redirect('/records')
 
+@server.route('/export')
+def export():
+    if not 'user_id' in session or not 'username' in session:
+        return redirect('/')
+    
+    user = session['username']
+    visualizer = vis.Visualizer(connection, session['user_id'])
+    data = visualizer.records_to_csv()
+
+    return Response(
+        data,
+        mimetype='text/csv',
+        headers={
+            'Content-disposition': f'attachment; filename=manymiles_{user}.csv',
+        }
+    )
+
 api = Api(server)
 
 class MostRecentRecordAPI(Resource):
@@ -273,10 +290,10 @@ class MostRecentRecordAPI(Resource):
 
         if passwords_match:
             session['user_id'] = users[0][0]
-            session['username'] = users[0][1]
+            session['username'] = users[0][1] # TODO: do these need to change the session?
 
             visualizer = vis.Visualizer(connection, user_id)
-            most_recent_record = visualizer.get_most_recent_record()
+            most_recent_record = visualizer.most_recent_record
 
             return {
                 'date': str(most_recent_record['date'].values[0]),
@@ -341,4 +358,4 @@ api.add_resource(
 )
 
 if __name__ == '__main__':
-    server.run(debug=True)
+    server.run(debug=False)
