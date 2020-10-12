@@ -264,7 +264,7 @@ class MostRecentRecordAPI(Resource):
         query = """
             SELECT * FROM `users` WHERE `username` LIKE "{}" LIMIT 1;
         """.format(username)
-        connection.fetch(query)
+        users = connection.fetch(query)
 
         user_id = users[0][0]
         stored_password = users[0][2]
@@ -316,7 +316,7 @@ class RecordAPI(Resource):
         query = """
             SELECT * FROM `users` WHERE `username` LIKE "{}" LIMIT 1;
         """.format(username)
-        connection.fetch(query)
+        users = connection.fetch(query)
 
         user_id, stored_password = users[0][0], users[0][2]
 
@@ -341,4 +341,4 @@ api.add_resource(
 )
 
 if __name__ == '__main__':
-    server.run(debug=False)
+    server.run(debug=True)
