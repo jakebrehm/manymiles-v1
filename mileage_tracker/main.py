@@ -1,4 +1,3 @@
-import configparser
 import datetime
 import os
 import pathlib
@@ -8,25 +7,12 @@ from flask import Flask, flash, redirect, render_template, request, session
 from flask_restful import Api, Resource, reqparse
 from werkzeug.security import check_password_hash, generate_password_hash
 
+import configuration as cfg
+import database as db
 import visualizations as vis
 
 
-class Configuration:
-
-    def __init__(self, config):
-        self.config = configparser.ConfigParser()
-        self.config.read(config)
-
-    def get(self, environment_name, config_section, config_name):
-        try:
-            return os.environ[environment_name]
-        except KeyError:
-            return self.config.get(config_section, config_name)
-
-PROJECT_FOLDER = pathlib.Path(__file__).resolve().parent.parent
-CONFIG_LOCATION = os.path.join(PROJECT_FOLDER, 'data', 'config.ini')
-
-config = Configuration(CONFIG_LOCATION)
+config = cfg.Configuration()
 
 server = Flask(__name__)
 server.secret_key = config.get('SECRET_KEY', 'general', 'secret key')
