@@ -271,7 +271,6 @@ class MostRecentRecordAPI(Resource):
 
         passwords_match = check_password_hash(stored_password, password)
 
-        cursor.close()
         if passwords_match:
             session['user_id'] = users[0][0]
             session['username'] = users[0][1]

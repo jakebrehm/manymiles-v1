@@ -22,7 +22,6 @@
     <body class="bg-gradient">
 
         <div class="main-menu">
-            <!-- <nav class="navbar fixed-top navbar-expand-lg navbar-dark navbar-default bg-primary"> -->
             <nav class="navbar fixed-top nav-transparent navbar-expand-lg navbar-dark navbar-default bg-dark">
                 <a class="navbar-brand" href="/app">Many Miles</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -30,10 +29,16 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ml-auto">
-                        <li class="nav-item active">
-                            <span class="navbar-text text-light mr-10">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Hello, <b>{{ user }}</b>!
-                            </span>
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="#">Import data</a>
+                                <a class="dropdown-item" href="#">Export data</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">Change password</a>
+                            </div>
                         </li>
                         <li class="nav-item">
                             <a class="text-light" href="/logout"><button class="btn btn-outline-light my-2 my-sm-0 ml-2">Log out</button></a>
