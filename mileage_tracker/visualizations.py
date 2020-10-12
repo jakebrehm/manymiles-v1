@@ -107,27 +107,41 @@ class Visualizer:
 
         # 
         all_records = self.all_records.copy()
-        optimal_to_most_recent_date = self._get_optimal_mileages_to_date()
+        optimal = self._get_optimal_mileages_to_date()
 
         # 
-        if self._is_null(optimal_to_most_recent_date):
+        if self._is_null(optimal):
             return None
 
         # Return None until there are at least two records
         if len(all_records) < 2:
             return None
+        
+        # 
+        all_records['date'] = pd.to_datetime(all_records['date'], format=r'%Y-%m-%d')
+
+        # 
+        all_records.index = all_records['datetime']
+        all_records = all_records.groupby(pd.Grouper(freq='D')).max()
+
+        # Fill in missing dates with the previously recorded value
+        all_records['miles'] = all_records['miles'].fillna(method='ffill')
+
+        # 
+        date = min(all_records['datetime']).date()
+        optimal = optimal[optimal['datetime'].dt.date >= date]
 
         # 
         data = [
             go.Scatter(
-                x=all_records['datetime'],
+                x=all_records.index,
                 y=all_records['miles'],
                 name='Actual',
                 hovertemplate='<b>%{x}</b><br>%{y:0.2f} miles'
             ),
             go.Scatter(
-                x=optimal_to_most_recent_date['date'],
-                y=optimal_to_most_recent_date['miles'],
+                x=optimal['date'],
+                y=optimal['miles'],
                 fill='tonexty',
                 line_color='green',
                 name='Optimal',
