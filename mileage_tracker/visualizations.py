@@ -165,25 +165,24 @@ class Visualizer:
         #
         records = records.groupby(pd.Grouper(freq='D')).max()
 
+        # Fill in missing dates with the previously recorded value
+        records['miles'] = records['miles'].fillna(method='ffill')
+
         # 
         differences = pd.DataFrame()
-        differences['miles'] = records['miles'].diff()
-
-        # print(differences)
-        # print(differences['miles'].isnull().all())
-        # TODO: figure out whether or not to backfill
+        differences['change'] = records['miles'].diff()
 
         # Return None until there are at least two records
-        if self._is_null(differences) or differences['miles'].isnull().all():
+        if self._is_null(differences) or differences['change'].isnull().all():
             return None
 
         # 
         data = [
             go.Scatter(
                 x=differences.index,
-                y=differences['miles'],
+                y=differences['change'],
                 name='Change',
-                hovertemplate='<b>%{x}</b><br>%{y:0.2f} mile change from previous day'
+                hovertemplate='<b>%{x}</b><br>%{y:0.2f} mile change'
             ),
             go.Scatter(
                 x=differences.index,
