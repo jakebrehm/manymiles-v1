@@ -39,16 +39,12 @@ def register():
 def app():
     if 'user_id' in session and 'username' in session:
 
-        # connection.ping()
-
         visualizer = vis.Visualizer(connection, session['user_id'])
         total_mileage_plot = visualizer.create_total_mileage_plot()
         daily_change_plot = visualizer.create_daily_change_plot()
         analysis = visualizer.perform_analysis()
         goal = visualizer.get_goal_as_dict()
         most_recent_mileage = visualizer.most_recent_mileage
-
-        # connection.close()
 
         # TODO: Verify that current_time is timezone independent
         return render_template(
@@ -69,19 +65,12 @@ def login_validation():
     username = request.form.get('username')
     password = request.form.get('password')
 
-    # connection.ping()
-    # cursor = connection.cursor()
-
     query = """
         SELECT * FROM `users` WHERE `username` LIKE "{}" LIMIT 1;
     """.format(username)
-    # cursor.execute(query)
-    # users = cursor.fetchall()
     users = connection.fetch(query)
 
     if not users:
-        # cursor.close()
-        # connection.close()
         flash('No account seems to exist with that username.')
         return redirect('/')
 
@@ -89,8 +78,6 @@ def login_validation():
 
     passwords_match = check_password_hash(stored_password, password)
 
-    # cursor.close()
-    # connection.close()
     if passwords_match:
         session['user_id'] = users[0][0]
         session['username'] = users[0][1]
@@ -105,45 +92,28 @@ def add_user():
     password = request.form.get('add-password')
     hashed = generate_password_hash(password)
 
-    # connection.ping()
-    # cursor = connection.cursor()
-
-    # 
-
     query = """
         SELECT * FROM `users` WHERE `username` LIKE "{}";
     """.format(username)
-    # cursor.execute(query)
-    # users = cursor.fetchall()
     users = connection.fetch(query)
 
     if len(users):
-        # cursor.close()
-        # connection.close()
         flash('This username has already been taken.')
         return redirect('/register')
-
-    #
 
     query = """
         INSERT INTO `users` (`id`, `username`, `password`)
         VALUES (NULL, "{}", "{}");
     """.format(username, hashed)
-    # cursor.execute(query)
-    # connection.commit()
     connection.execute(query)
 
     query = """
         SELECT * FROM `users` WHERE `username` LIKE "{}"
     """.format(username)
-    # cursor.execute(query)
-    # user = cursor.fetchall()
     user = connection.fetch(query)
 
     session['user_id'] = user[0][0]
     session['username'] = user[0][1]
-    # cursor.close()
-    # connection.close()
     return redirect('/app')
 
 @server.route('/logout')
@@ -160,20 +130,13 @@ def update_goal():
     end_miles = request.form.get('end-miles')
     end_date = request.form.get('end-date')
 
-    # connection.ping()
-    # cursor = connection.cursor()
-
     query = """
         REPLACE INTO `goals`
         (`user_id`, `start_date`, `end_date`, `start_miles`, `end_miles`)
         VALUES ("{}", "{}", "{}", "{}", "{}")
     """.format(session['user_id'], start_date, end_date, start_miles, end_miles)
-    # cursor.execute(query)
-    # connection.commit()
     connection.execute(query)
 
-    # cursor.close()
-    # connection.close()
     if session['user_id']:
         return redirect('/app')
     else:
@@ -196,20 +159,12 @@ def add_record():
         
         date, time = timedate.split(r'T')
 
-        # connection.ping()
-        # cursor = connection.cursor()
-
         query = """
             INSERT INTO `records`
             (`user_id`, `date`, `time`, `miles`)
             VALUES ("{}", "{}", "{}", "{}")
         """.format(session['user_id'], date, time, miles)
-        # cursor.execute(query)
-        # connection.commit()
         connection.execute(query)
-
-        # cursor.close()
-        # connection.close()
 
         if session['user_id']:
             return redirect('/app')
@@ -223,9 +178,7 @@ def add_record():
 def records():
     if 'user_id' in session and 'username' in session:
 
-        # connection.ping()
-
-        visualizer = vis.Visualizer(connection, session['user_id']) # TODO: make vis use conn
+        visualizer = vis.Visualizer(connection, session['user_id'])
         all_records = visualizer.all_records.iloc[::-1]
         if all_records.empty:
             processed_records = None
@@ -235,8 +188,6 @@ def records():
             times = all_records['time'].tolist()
             miles = all_records['miles'].tolist()
             processed_records = list(zip(ids, dates, times, miles))
-
-        # connection.close()
 
         return render_template(
             'records.html',
@@ -276,9 +227,6 @@ def update_record():
 
     record_id = request.args.get('record')
 
-    # connection.ping()
-    # cursor = connection.cursor()
-
     timedate = request.form.get('update-datetime')
     miles = request.form.get('update-miles')
     date, time = timedate.split(r'T')
@@ -288,12 +236,7 @@ def update_record():
         SET `date` = "{}", `time` = "{}", `miles` = "{}"
         WHERE `user_id` LIKE "{}" AND `id` LIKE "{}";
     """.format(date, time, miles, session['user_id'], record_id)
-    # cursor.execute(query)
-    # connection.commit()
     connection.execute(query)
-
-    # cursor.close()
-    # connection.close()
 
     return redirect('/records')
 
@@ -303,20 +246,12 @@ def delete_record():
         return redirect('/')
 
     record_id = request.args.get('record')
-
-    # connection.ping()
-    # cursor = connection.cursor()
     
     query = """
         DELETE FROM `records`
         WHERE `user_id` LIKE "{}" AND `id` LIKE "{}" LIMIT 1;
     """.format(session['user_id'], record_id)
-    # cursor.execute(query)
-    # connection.commit()
     connection.execute(query)
-
-    # cursor.close()
-    # connection.close()
 
     return redirect('/records')
 
@@ -329,14 +264,9 @@ class MostRecentRecordAPI(Resource):
         if not username or not password:
             return {}
 
-        # connection.ping()
-        # cursor = connection.cursor()
-
         query = """
             SELECT * FROM `users` WHERE `username` LIKE "{}" LIMIT 1;
         """.format(username)
-        # cursor.execute(query)
-        # users = cursor.fetchall()
         connection.fetch(query)
 
         user_id = users[0][0]
@@ -352,14 +282,12 @@ class MostRecentRecordAPI(Resource):
             visualizer = vis.Visualizer(connection, user_id)
             most_recent_record = visualizer.get_most_recent_record()
 
-            # connection.close()
             return {
                 'date': str(most_recent_record['date'].values[0]),
                 'time': str(most_recent_record['time'].values[0]),
                 'miles': int(most_recent_record['miles']),
             }
         else:
-            # connection.close()
             return {}
 
 api.add_resource(
@@ -389,14 +317,9 @@ class RecordAPI(Resource):
         date = args['date'] if args['date'] else parsed_date
         time = args['time'] if args['time'] else parsed_time
 
-        # connection.ping()
-        # cursor = connection.cursor()
-
         query = """
             SELECT * FROM `users` WHERE `username` LIKE "{}" LIMIT 1;
         """.format(username)
-        # cursor.execute(query)
-        # users = cursor.fetchall()
         connection.fetch(query)
 
         user_id, stored_password = users[0][0], users[0][2]
@@ -410,17 +333,10 @@ class RecordAPI(Resource):
                 (`user_id`, `date`, `time`, `miles`)
                 VALUES ("{}", "{}", "{}", "{}")
             """.format(user_id, date, time, miles)
-            # cursor.execute(query)
-            # connection.commit()
             connection.execute(query)
-
-            # cursor.close()
-            # connection.close()
 
             return args
         else:
-            # cursor.close()
-            # connection.close()
             return args
 
 api.add_resource(
