@@ -269,6 +269,62 @@ def export():
         }
     )
 
+@server.route('/change_password')
+def change_password():
+    if not 'user_id' in session:
+        return redirect('/')
+        
+    return render_template(
+        'change_password.html',
+        user=session['username'],
+    )
+
+@server.route('/update_password', methods=['POST'])
+def update_password():
+    if not 'user_id' in session or not 'username' in session:
+        return redirect('/')
+
+    current_password = request.form.get('current-password')
+    new_password = request.form.get('new-password')
+    retyped_new_password = request.form.get('retype-new-password')
+
+    query = """
+        SELECT * FROM `users` WHERE `id` LIKE "{}" LIMIT 1;
+    """.format(session['user_id'])
+    users = connection.fetch(query)
+
+    stored_password = users[0][2]
+    passwords_match = check_password_hash(stored_password, current_password)
+
+    if not all([current_password, new_password, retyped_new_password]):
+        flash('Please make sure all fields are filled out.', 'danger')
+        return redirect('/change_password')
+    elif not passwords_match:
+        flash(
+            'The current password you entered does not match the one on file.',
+            'danger',
+        )
+        return redirect('/change_password')
+    elif new_password != retyped_new_password:
+        flash('The new passwords must match.', 'danger')
+        return redirect('/change_password')
+    elif current_password == new_password:
+        flash(
+            'Your new password can not be the same as your current password.',
+            'danger',
+        )
+        return redirect('/change_password')
+    
+    hashed_password = generate_password_hash(new_password)
+
+    query = """
+        UPDATE `users` SET `password` = "{}" WHERE `id` LIKE "{}";
+    """.format(hashed_password, session['user_id'])
+    connection.execute(query)
+
+    flash('Password successfully updated.', 'success')
+    return redirect('/change_password')
+
 api = Api(server)
 
 class MostRecentRecordAPI(Resource):
