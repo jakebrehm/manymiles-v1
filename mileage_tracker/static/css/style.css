@@ -82,7 +82,7 @@
 
 .slogan-md {
     font-size: 50px !important;
-    margin-bottom: 50px;
+    margin-bottom: 25px;
 }
 
 /* Viewports of 575px or less */
@@ -115,7 +115,7 @@
 @media only screen and (max-width: 767px) {
     
     .vertical-margins {
-        margin: 50px auto;
+        margin: 25px auto;
     }
 
     .slogan-lg {
@@ -124,7 +124,7 @@
 
     .slogan-md {
         font-size: 20px !important;
-        margin-bottom: 50px;
+        margin-bottom: 25px;
     }
 
     .record-cell .record-btn:last-child {

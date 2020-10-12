@@ -266,7 +266,7 @@ def update():
     record = {
         'id': record_id,
         'miles': int(match['miles'].values[0]),
-        'datetime': match['datetime'].values[0],
+        'datetime': match['datetime'].dt.strftime(r'%Y-%m-%dT%H:%M').values[0],
     }
 
     return render_template(
@@ -430,4 +430,4 @@ api.add_resource(
 )
 
 if __name__ == '__main__':
-    server.run(debug=True)
+    server.run(debug=False)
