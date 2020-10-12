@@ -71,39 +71,3 @@ class Connection:
     @connection_required
     def execute(self, query):
         self.fetch(query, commit=True)
-
-
-if __name__ == '__main__':
-    
-    config = cfg.Configuration()
-    # print(config.get('SECRET_KEY', 'general', 'secret key'))
-
-    login = {
-        'host': config.get('CLEARDB_DATABASE_HOST', 'database', 'host'),
-        'user': config.get('CLEARDB_DATABASE_USER', 'database', 'user'),
-        'password': config.get('CLEARDB_DATABASE_PASSWORD', 'database', 'password'),
-        'database': config.get('CLEARDB_DATABASE_NAME', 'database', 'database'),
-    }
-
-    db = Connection(**login)
-
-    username = 'jake'
-    query = """
-        SELECT * FROM `users` WHERE `username` LIKE "{}" LIMIT 1;
-    """.format(username)
-    result = db.fetch(query)
-    print(result)
-
-    query = """
-        INSERT INTO `users` (`id`, `username`, `password`)
-        VALUES (NULL, "{}", "{}");
-    """.format('test', 'test')
-    result = db.fetch(query, commit=True)
-    print(result)
-
-    query = """
-        INSERT INTO `users` (`id`, `username`, `password`)
-        VALUES (NULL, "{}", "{}");
-    """.format('test2', 'test2')
-    result = db.execute(query)
-    print(result)

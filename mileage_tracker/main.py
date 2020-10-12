@@ -1,8 +1,5 @@
 import datetime
-import os
-import pathlib
 
-import pymysql
 from flask import Flask, flash, redirect, render_template, request, session
 from flask_restful import Api, Resource, reqparse
 from werkzeug.security import check_password_hash, generate_password_hash
