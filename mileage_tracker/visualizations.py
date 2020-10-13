@@ -162,7 +162,7 @@ class Visualizer:
         records = self.all_records.copy()
         records.index = records['datetime']
 
-        #
+        # 
         records = records.groupby(pd.Grouper(freq='D')).max()
 
         # Fill in missing dates with the previously recorded value
@@ -171,6 +171,8 @@ class Visualizer:
         # 
         differences = pd.DataFrame()
         differences['change'] = records['miles'].diff()
+        # The first row of a difference will always be NaN; change to zero
+        differences['change'].iloc[0] = 0
 
         # Return None until there are at least two records
         if self._is_null(differences) or differences['change'].isnull().all():
