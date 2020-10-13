@@ -174,6 +174,10 @@ class Visualizer:
         # The first row of a difference will always be NaN; change to zero
         differences['change'].iloc[0] = 0
 
+        # Return None if there is less than two data points
+        if len(differences) < 2:
+            return None
+
         # Return None until there are at least two records
         if self._is_null(differences) or differences['change'].isnull().all():
             return None
