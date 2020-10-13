@@ -16,7 +16,7 @@
 
 Its purpose is to provide an easy and user-friendly way to track vehicle mileage, as well as provide statistics and an analysis of that data. It also provides a REST API that makes it easy to add records from other sources, such as a Siri Shortcut.
 
-Check out the website [here](https://www.manymiles.app), and check out my personal Siri Shortcut [here](https://www.icloud.com/shortcuts/84cbd9f79d4846229d790e648fabfa8e) if you're on iOS.
+Check out the website [here](https://www.manymiles.app), and check out my personal Siri Shortcut [here](https://www.icloud.com/shortcuts/3da05ad93cbe417cb12ee8f9922f0654) if you're on iOS.
 
 ## Inspiration
 
