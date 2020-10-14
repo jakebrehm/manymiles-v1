@@ -150,7 +150,7 @@ class Visualizer:
         # 
         return json.dumps(data, cls=plotly.utils.PlotlyJSONEncoder)
 
-    def create_daily_change_plot(self):
+    def create_daily_change_plot(self, include_start_miles=True):
         
         # 
         if self._is_null(self.all_records):
@@ -166,11 +166,38 @@ class Visualizer:
         # Fill in missing dates with the previously recorded value
         records['miles'] = records['miles'].fillna(method='ffill')
 
+        # TODO: this section needs to be checked over pretty thoroughly
+        # 
+        if include_start_miles and not self._is_null(self.goals):
+
+            # Get the user's start date and start miles
+            goals = self.goals.copy()
+            start_date = goals['start_date'].values[0]
+            start_miles = goals['start_miles'].values[0]
+            
+            # Group the records by date, only keeping each day's maximum mileage
+            records.index = records['datetime']
+            records = records.groupby(pd.Grouper(freq='D')).max()
+
+            # Get the date and mileage of the first recorded day of records
+            first_day = records[records['datetime'] == records['datetime'].min()]
+            first_date = first_day['date'].values[0]
+            first_mileage = first_day['miles'].values[0]     
+            # TODO: this is where it gets wonky - is this check necessary?
+            # If the first records were on the starting day, get the difference
+            if first_date == start_date:    
+                first_difference = (first_mileage - start_miles)
+            else:
+                first_difference = 0
+        else:
+            first_difference = 0
+
         # 
         differences = pd.DataFrame()
         differences['change'] = records['miles'].diff()
         # The first row of a difference will always be NaN; change to zero
-        differences['change'].iloc[0] = 0
+        differences['change'].iloc[0] = first_difference
+        # differences['change'].iloc[0] = 0
 
         # Return None if there is less than two data points
         if len(differences) < 2:
