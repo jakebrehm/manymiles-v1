@@ -110,11 +110,7 @@ class Visualizer:
         optimal = self._get_optimal_mileages_to_date()
 
         # 
-        if self._is_null(optimal):
-            return None
-
-        # Return None until there are at least two records
-        if len(all_records) < 2:
+        if self._is_null(all_records) or len(all_records) < 2:
             return None
         
         # 
@@ -128,10 +124,6 @@ class Visualizer:
         all_records['miles'] = all_records['miles'].fillna(method='ffill')
 
         # 
-        date = min(all_records['datetime']).date()
-        optimal = optimal[optimal['datetime'].dt.date >= date]
-
-        # 
         data = [
             go.Scatter(
                 x=all_records.index,
@@ -139,16 +131,22 @@ class Visualizer:
                 name='Actual',
                 hovertemplate='<b>%{x}</b><br>%{y:0.2f} miles'
             ),
-            go.Scatter(
-                x=optimal['date'],
-                y=optimal['miles'],
-                fill='tonexty',
-                line_color='green',
-                name='Optimal',
-                hovertemplate='<b>%{x}</b><br>%{y:0.2f} miles'
-            ),
         ]
 
+        # 
+        if not self._is_null(optimal):
+            # 
+            date = min(all_records['datetime']).date()
+            optimal = optimal[optimal['datetime'].dt.date >= date]
+            data.append(go.Scatter(
+                    x=optimal['date'],
+                    y=optimal['miles'],
+                    fill='tonexty',
+                    line_color='green',
+                    name='Optimal',
+                    hovertemplate='<b>%{x}</b><br>%{y:0.2f} miles'
+            ))
+        
         # 
         return json.dumps(data, cls=plotly.utils.PlotlyJSONEncoder)
 
