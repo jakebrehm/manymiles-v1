@@ -163,10 +163,7 @@ class Visualizer:
         # 
         records = records.groupby(pd.Grouper(freq='D')).max()
 
-        # Fill in missing dates with the previously recorded value
-        records['miles'] = records['miles'].fillna(method='ffill')
-
-        # TODO: this section needs to be checked over pretty thoroughly
+        # TODO: something here is causing the diff to not work
         # 
         if include_start_miles and not self._is_null(self.goals):
 
@@ -179,25 +176,32 @@ class Visualizer:
             records.index = records['datetime']
             records = records.groupby(pd.Grouper(freq='D')).max()
 
+            # Fill in missing dates with the previously recorded value
+            records['miles'] = records['miles'].fillna(method='ffill')
+
             # Get the date and mileage of the first recorded day of records
             first_day = records[records['datetime'] == records['datetime'].min()]
             first_date = first_day['date'].values[0]
             first_mileage = first_day['miles'].values[0]     
-            # TODO: this is where it gets wonky - is this check necessary?
+
             # If the first records were on the starting day, get the difference
             if first_date == start_date:    
                 first_difference = (first_mileage - start_miles)
             else:
                 first_difference = 0
         else:
+            # Fill in missing dates with the previously recorded value
+            records['miles'] = records['miles'].fillna(method='ffill')
+            
+            # 
             first_difference = 0
+
 
         # 
         differences = pd.DataFrame()
         differences['change'] = records['miles'].diff()
-        # The first row of a difference will always be NaN; change to zero
+        # The first row of a difference will always be NaN; change appropriately
         differences['change'].iloc[0] = first_difference
-        # differences['change'].iloc[0] = 0
 
         # Return None if there is less than two data points
         if len(differences) < 2:
@@ -211,13 +215,16 @@ class Visualizer:
         data = [
             go.Scatter(
                 x=differences.index,
+                # x=differences['datetime'],
                 y=differences['change'],
                 name='Change',
                 hovertemplate='<b>%{x}</b><br>%{y:0.2f} mile change'
             ),
             go.Scatter(
                 x=differences.index,
+                # x=differences['datetime'],
                 y=[self.daily_mileage] * len(differences.index),
+                # y=[self.daily_mileage] * len(differences['datetime']),
                 line_color='red',
                 name='Daily Allowance',
                 opacity=0.25,
