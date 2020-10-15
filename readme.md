@@ -8,9 +8,9 @@
     A web application for tracking vehicle mileage, built with <a href="https://github.com/pallets/flask" target="_blank">Flask</a> and hosted on <a href="https://www.heroku.com/" target="_blank">Heroku</a>.
 </p>
 
-<!-- <p align="center">
-  <img src="https://github.com/jakebrehm/personal-website-v2/blob/master/img/screenshot.png" alt="Personal Portfolio Screenshot"/>
-</p> -->
+<p align="center">
+  <img src="https://github.com/jakebrehm/manymiles/blob/master/img/screenshot.png" alt="ManyMiles Screenshot"/>
+</p>
 
 ---
 
