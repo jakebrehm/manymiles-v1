@@ -7,3 +7,4 @@ tests/
 *.ini
 *.cpython*
 todo.md
+*.env
