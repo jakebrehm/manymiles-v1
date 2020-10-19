@@ -5,7 +5,7 @@
 <h1 align="center">ManyMiles</h1>
 
 <p align="center">
-    A web application for tracking vehicle mileage, built with <a href="https://github.com/pallets/flask" target="_blank">Flask</a> and hosted on <a href="https://www.heroku.com/" target="_blank">Heroku</a>.
+    A web application for tracking and analyzing vehicle mileage, built with <a href="https://github.com/pallets/flask" target="_blank">Flask</a> and hosted on <a href="https://www.heroku.com/" target="_blank">Heroku</a>.
 </p>
 
 <p align="center">
