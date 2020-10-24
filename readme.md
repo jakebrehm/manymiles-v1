@@ -20,6 +20,6 @@ Check out the website [here](https://www.manymiles.app), and check out my person
 
 ## Inspiration
 
-I'm a data fanatic, so I log my car's mileage in a Google Sheet daily to see how I'm doing relative to my lease's mileage limit. Tired of wasting 30 seconds messing around with a spreadsheet, I decided to spend a couple dozen hours building a website that would make it take 10 seconds instead!
+I'm a data fanatic, so I log my car's mileage in a spreadsheet daily to see how I'm doing relative to my lease's mileage limit. I was tired of wasting 30 seconds messing around with a spreadsheet every day, so I decided to spend a couple dozen hours building a website that would make it take 10 seconds instead!
 
 My endgoal was a Siri Shortcut that would allow me to record my daily mileage hands-free by speaking to my phone; this meant that I needed some kind of API. A functional website, supplementary analysis, and web development experience were icing on the cake.
