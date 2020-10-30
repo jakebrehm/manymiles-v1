@@ -20,7 +20,9 @@ Check out the website [here](https://www.manymiles.app), and check out my person
 
 ## API Usage
 
-Documentation for the *ManyMiles* API is coming soon.
+Documentation for the *ManyMiles* API is coming soon, including descriptions of the following features:
+- Most Recent Mileage
+- Add Record
 
 ## Inspiration
 
