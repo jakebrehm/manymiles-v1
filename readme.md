@@ -14,7 +14,7 @@
 
 ---
 
-*ManyMiles* aims to provide an easy and user-friendly way to track and analyze vehicle mileage. To make it even easier to add records from other sources, a REST API is also provided.
+*ManyMiles* aims to provide an easy and user-friendly way to track and analyze vehicle mileage. To make it even easier to add records, a REST API is also provided.
 
 Check out the website [here](https://www.manymiles.app), and check out my personal Siri Shortcut [here](https://www.icloud.com/shortcuts/3da05ad93cbe417cb12ee8f9922f0654) if you're on iOS.
 
