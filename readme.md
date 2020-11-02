@@ -24,7 +24,7 @@ Documentation for the *ManyMiles* API is coming soon, including descriptions of 
 - Most Recent Mileage
 - Add Record
 
-More features are coming soon as well.
+More features are coming soon as well, such as the ability to get your current mileage overage.
 
 ## Inspiration
 
