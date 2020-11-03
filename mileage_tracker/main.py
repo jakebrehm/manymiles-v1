@@ -345,9 +345,7 @@ class MostRecentRecordAPI(Resource):
         passwords_match = check_password_hash(stored_password, password)
 
         if passwords_match:
-            session['user_id'] = users[0][0]
-            session['username'] = users[0][1] # TODO: do these need to change the session?
-
+            
             visualizer = vis.Visualizer(connection, user_id)
             most_recent_record = visualizer.most_recent_record
 
@@ -411,6 +409,39 @@ class RecordAPI(Resource):
 api.add_resource(
     RecordAPI,
     '/api/addrecord'
+)
+
+class OverageAPI(Resource):
+
+    def get(self, username, password):
+
+        if not username or not password:
+            return {}
+
+        query = """
+            SELECT * FROM `users` WHERE `username` LIKE "{}" LIMIT 1;
+        """.format(username)
+        users = connection.fetch(query)
+
+        user_id = users[0][0]
+        stored_password = users[0][2]
+
+        passwords_match = check_password_hash(stored_password, password)
+
+        if passwords_match:
+
+            visualizer = vis.Visualizer(connection, user_id)
+            analysis = visualizer.perform_analysis()
+
+            return {
+                'overage': float(analysis['overage']),
+            }
+        else:
+            return {}
+
+api.add_resource(
+    OverageAPI,
+    '/api/overage/<string:username>&<string:password>'
 )
 
 if __name__ == '__main__':
