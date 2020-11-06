@@ -23,6 +23,7 @@ Check out the website [here](https://www.manymiles.app), and check out my person
 Documentation for the *ManyMiles* API is coming soon, including descriptions of the following features:
 - Most Recent Mileage
 - Add Record
+- Current Overage
 
 More features are coming soon as well, such as the ability to get your current mileage overage.
 
