@@ -370,7 +370,12 @@ class Visualizer:
             date = max(records['datetime'])
 
         # 
-        return optimal[optimal['datetime'].dt.date == date.date()]['miles'].values[0]
+        try:
+            # This won't work if the current date is after the end date
+            return optimal[optimal['datetime'].dt.date == date.date()]['miles'].values[0]
+        except IndexError:
+            # If past the end date, just use the end miles
+            return self.goals.copy()['end_miles'].values[0]
 
     def _get_optimal_mileages_to_date(self, date=None):
 
