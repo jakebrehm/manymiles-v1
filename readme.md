@@ -1,7 +1,3 @@
-<!-- <p align="center">
-  <img src="https://github.com/jakebrehm/personal-website-v2/blob/master/img/logo.png" width="100" alt="Personal Portfolio Logo"/>
-</p> -->
-
 <h1 align="center">ManyMiles</h1>
 
 <p align="center">
@@ -9,7 +5,7 @@
 </p>
 
 <p align="center">
-  <img src="https://github.com/jakebrehm/manymiles/blob/master/img/screenshot.png" alt="ManyMiles Screenshot"/>
+  <img src="https://github.com/jakebrehm/manymiles-v1/blob/master/img/screenshot.png" alt="ManyMiles Screenshot"/>
 </p>
 
 ---
